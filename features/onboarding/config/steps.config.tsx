@@ -9,7 +9,6 @@ import {
   Bell,
   Target,
   UserRound,
-  ShieldCheck,
   PartyPopper,
 } from "lucide-react";
 import type { ReactNode } from "react";
@@ -70,9 +69,21 @@ function LockVisual() {
 
 function FeatureListVisual() {
   const items = [
-    { icon: BarChart3, label: "Mood analytics", sub: "Spot trends over days, weeks, months" },
-    { icon: BookOpen, label: "Private journal", sub: "Your thoughts, beautifully kept" },
-    { icon: Sparkles, label: "Wellness tips", sub: "Personalised to how you feel" },
+    {
+      icon: BarChart3,
+      label: "Mood analytics",
+      sub: "Spot trends over days, weeks, months",
+    },
+    {
+      icon: BookOpen,
+      label: "Private journal",
+      sub: "Your thoughts, beautifully kept",
+    },
+    {
+      icon: Sparkles,
+      label: "Wellness tips",
+      sub: "Personalised to how you feel",
+    },
   ];
   return (
     <div className="flex flex-col gap-3">
@@ -84,9 +95,14 @@ function FeatureListVisual() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: i * 0.1, duration: 0.4 }}
         >
-          <item.icon className="h-5 w-5 shrink-0 text-white" strokeWidth={1.75} />
+          <item.icon
+            className="h-5 w-5 shrink-0 text-white"
+            strokeWidth={1.75}
+          />
           <div>
-            <p className="text-body-sm font-semibold text-white">{item.label}</p>
+            <p className="text-body-sm font-semibold text-white">
+              {item.label}
+            </p>
             <p className="text-caption text-white/60">{item.sub}</p>
           </div>
         </motion.div>
@@ -223,7 +239,8 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     slug: "privacy",
     category: "Privacy",
     heading: "Your data. Only yours.",
-    subtext: "Everything you share stays private. No selling, no sharing, no exceptions.",
+    subtext:
+      "Everything you share stays private. No selling, no sharing, no exceptions.",
     gradient: "from-purple-900 via-purple-700 to-info",
     Visual: LockVisual,
   },
@@ -231,7 +248,8 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     slug: "features",
     category: "Features",
     heading: "Built for how you actually feel.",
-    subtext: "Simple daily check-ins, a private journal, and insights that help you grow.",
+    subtext:
+      "Simple daily check-ins, a private journal, and insights that help you grow.",
     gradient: "from-purple-900 via-purple-700 to-purple-500",
     Visual: FeatureListVisual,
   },
@@ -239,7 +257,8 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     slug: "create-account",
     category: "Create account",
     heading: "Join thousands feeling better.",
-    subtext: "Create your free account and start understanding your emotions today.",
+    subtext:
+      "Create your free account and start understanding your emotions today.",
     gradient: "from-purple-900 via-green-700 to-green-500",
     Visual: StatsGridVisual,
   },
@@ -255,7 +274,8 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     slug: "goals",
     category: "Your goals",
     heading: "What matters to you?",
-    subtext: "Your goals help us surface the right tips and insights for your journey.",
+    subtext:
+      "Your goals help us surface the right tips and insights for your journey.",
     gradient: "from-purple-900 via-info to-green-700",
     Visual: TargetVisual,
   },
@@ -263,7 +283,8 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     slug: "reminders",
     category: "Reminders",
     heading: "Stay on track.",
-    subtext: "A gentle daily nudge keeps the habit alive. You control the timing.",
+    subtext:
+      "A gentle daily nudge keeps the habit alive. You control the timing.",
     gradient: "from-purple-900 to-green-700",
     Visual: BellVisual,
   },
