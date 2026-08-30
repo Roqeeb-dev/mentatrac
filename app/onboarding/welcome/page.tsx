@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Frown, Meh, Smile, Sparkles, HeartHandshake } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const MOODS = [
   {
@@ -39,6 +40,11 @@ const MOODS = [
 ];
 
 export default function WelcomePage() {
+  const router = useRouter();
+
+  const handleNext = () => {
+    router.push("/onboarding/privacy");
+  };
   return (
     <div className="flex flex-col gap-6">
       {/* 1. Header Section */}
@@ -85,6 +91,7 @@ export default function WelcomePage() {
           variant="primary"
           size="lg"
           fullWidth
+          onClick={handleNext}
           rightIcon={<ArrowRight className="h-4 w-4" />}
         >
           Get started
