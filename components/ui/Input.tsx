@@ -1,7 +1,8 @@
 "use client";
 
-import { forwardRef, useId } from "react";
+import { forwardRef, useId, useState } from "react";
 import type { InputHTMLAttributes, ReactNode } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface InputProps extends Omit<
@@ -31,6 +32,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       containerClassName,
       value,
       defaultValue,
+      type,
       ...props
     },
     ref,
@@ -38,9 +40,20 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const generatedId = useId();
     const inputId = id ?? generatedId;
     const helperId = `${inputId}-helper`;
+
+    // Internal state for password visibility
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const isPasswordType = type === "password";
+    const currentType = isPasswordType
+      ? isPasswordVisible
+        ? "text"
+        : "password"
+      : type;
+
     const hasValue =
       (value !== undefined && value !== "") ||
       (defaultValue !== undefined && defaultValue !== "");
+
     const state = error
       ? "error"
       : disabled
@@ -71,6 +84,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             id={inputId}
+            type={currentType}
             disabled={disabled}
             required={required}
             value={value}
@@ -81,17 +95,31 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             className={cn(
               "input",
               leftIcon && "!pl-10",
-              rightIcon && "!pr-10",
+              (rightIcon || isPasswordType) && "!pr-10", // Ensure padding for the eye icon
               className,
             )}
             {...props}
           />
 
-          {rightIcon && (
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+          {/* Render Password Toggle OR Custom Right Icon */}
+          {isPasswordType ? (
+            <button
+              type="button"
+              onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-700 rounded-sm"
+              aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+            >
+              {isPasswordVisible ? (
+                <EyeOff className="h-4.5 w-4.5" />
+              ) : (
+                <Eye className="h-4.5 w-4.5" />
+              )}
+            </button>
+          ) : rightIcon ? (
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
               {rightIcon}
             </span>
-          )}
+          ) : null}
         </div>
 
         {(error || helperText) && (
