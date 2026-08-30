@@ -30,8 +30,7 @@ export default function GoalsPage() {
 
   const handleNext = () => {
     if (selectedGoals.length === 0) return;
-    // Save goals state/mutation here if needed
-    router.push("/onboarding/reminders"); // Route to Step 7
+    router.push("/onboarding/reminder");
   };
 
   const hasSelection = selectedGoals.length > 0;
