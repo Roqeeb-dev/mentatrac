@@ -45,7 +45,7 @@ export default function OnboardingLayout({
 
           {/* Form Content Area */}
           <div className="flex flex-1 items-center justify-center">
-            <div className="w-full max-w-md">
+            <div className="w-full max-w-[600px]">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={pathname}
