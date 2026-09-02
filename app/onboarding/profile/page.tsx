@@ -5,15 +5,19 @@ import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { useOnboardingDraft } from "@/features/onboarding/hooks/useOnboardingDraft";
+import type { Gender } from "@/stores/useOnboardingStore";
 
-const GENDER_OPTIONS = ["Prefer not to say", "Male", "Female", "Non-binary"];
+const GENDER_OPTIONS: { id: Gender; label: string }[] = [
+  { id: "prefer_not_to_say", label: "Prefer not to say" },
+  { id: "male", label: "Male" },
+  { id: "female", label: "Female" },
+];
 
 export default function ProfilePage() {
   const router = useRouter();
-
-  const [firstName, setFirstName] = useState("");
-  const [age, setAge] = useState("");
-  const [gender, setGender] = useState("Prefer not to say");
+  const { firstName, age, gender, setField, isHydrated } = useOnboardingDraft();
   const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -23,13 +27,28 @@ export default function ProfilePage() {
       return;
     }
 
-    // Process profile submission / cache data
-    router.push("/onboarding/goals"); // Step 6 route
+    router.push("/onboarding/goals");
   };
+
+  if (!isHydrated) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-8 w-64" />
+        </div>
+        <div className="flex flex-col gap-5">
+          <Skeleton className="h-14 w-full" />
+          <Skeleton className="h-14 w-full" />
+          <Skeleton className="h-12 w-full" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">
-      {/* 1. Header Section */}
+      {/* Header Section */}
       <div className="flex flex-col gap-2">
         <p className="text-overline font-semibold uppercase tracking-wider text-text-tertiary">
           Your Profile
@@ -39,7 +58,7 @@ export default function ProfilePage() {
         </h1>
       </div>
 
-      {/* 2. Profile Form */}
+      {/* Profile Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <Input
           label="Your first name"
@@ -47,7 +66,7 @@ export default function ProfilePage() {
           placeholder="e.g. Alex"
           value={firstName}
           onChange={(e) => {
-            setFirstName(e.target.value);
+            setField("firstName", e.target.value);
             if (error) setError("");
           }}
           error={error}
@@ -59,36 +78,36 @@ export default function ProfilePage() {
           type="number"
           placeholder="e.g. 28"
           value={age}
-          onChange={(e) => setAge(e.target.value)}
+          onChange={(e) => setField("age", e.target.value)}
         />
 
-        {/* 3. Gender Pill Selector */}
+        {/* Gender Pill Selector */}
         <div className="flex flex-col gap-2">
           <label className="text-body-sm font-medium text-text-primary">
             Gender (optional)
           </label>
           <div className="flex flex-wrap items-center gap-2">
             {GENDER_OPTIONS.map((option) => {
-              const isSelected = gender === option;
+              const isSelected = gender === option.id;
               return (
                 <button
-                  key={option}
+                  key={option.id}
                   type="button"
-                  onClick={() => setGender(option)}
+                  onClick={() => setField("gender", option.id)}
                   className={`rounded-full px-4 py-2 text-caption font-semibold transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-700 ${
                     isSelected
                       ? "border border-purple-700 bg-purple-50 text-purple-700"
                       : "border border-gray-200 bg-white text-text-secondary hover:border-gray-300 hover:text-text-primary"
                   }`}
                 >
-                  {option}
+                  {option.label}
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* 4. Actions */}
+        {/* Actions */}
         <div className="flex flex-col pt-3">
           <Button
             type="submit"

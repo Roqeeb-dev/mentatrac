@@ -1,8 +1,8 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { onboardingService } from "@/services/onboarding.service";
-import { AUTH_QUERY_KEY } from "@/hooks/useAuth";
+import { onboardingService } from "@/features/onboarding/services/onboarding.service";
+import { AUTH_QUERY_KEY } from "@/features/auth/hooks/useAuth";
 import type { UpdateOnboardingPayload } from "@/types/api";
 import type { OnboardingStepSlug } from "@/lib/onboarding/step-order";
 

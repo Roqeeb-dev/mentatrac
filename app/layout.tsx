@@ -8,6 +8,7 @@ const dmSerifDisplay = DM_Serif_Display({
   weight: "400",
   variable: "--font-dm-serif-display",
   display: "swap",
+  fallback: ["Georgia", "serif"],
 });
 
 const outfit = Outfit({
@@ -15,6 +16,7 @@ const outfit = Outfit({
   weight: ["400", "500", "600", "700"],
   variable: "--font-outfit",
   display: "swap",
+  fallback: ["system-ui", "sans-serif"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -22,6 +24,7 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500"],
   variable: "--font-jetbrains-mono",
   display: "swap",
+  fallback: ["Courier New", "monospace"],
 });
 
 export const metadata: Metadata = {
