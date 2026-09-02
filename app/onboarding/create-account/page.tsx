@@ -69,7 +69,11 @@ export default function CreateAccountPage() {
           type="email"
           placeholder="you@example.com"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (errors.email)
+              setErrors((prev) => ({ ...prev, email: undefined }));
+          }}
           error={errors.email}
           required
         />
@@ -79,7 +83,11 @@ export default function CreateAccountPage() {
           type="password"
           placeholder="Min. 6 characters"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            if (errors.password)
+              setErrors((prev) => ({ ...prev, password: undefined }));
+          }}
           error={errors.password}
           required
         />

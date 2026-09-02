@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { useLogin } from "@/hooks/useAuth"; // Path to your query hooks file
+import { useLogin } from "@/hooks/useAuth";
 
 export default function LoginPage() {
   const router = useRouter();
