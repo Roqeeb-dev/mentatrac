@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Lock } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { useSignUp } from "@/hooks/useAuth";
+import { useSignUp } from "@/features/auth/hooks/useAuth";
 
 export default function CreateAccountPage() {
   const router = useRouter();
