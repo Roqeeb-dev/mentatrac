@@ -3,14 +3,21 @@
 import { useUserProfile } from "@/features/profile/hooks/useUserProfile";
 import ProfileOverviewCard from "@/features/profile/components/ProfileOverviewCard";
 import ProfileSettingsSection from "@/features/profile/components/ProfileSettingsSection";
+import { ProfileSkeleton } from "@/features/profile/components/ProfileSkeleton";
+import { ProfileErrorState } from "@/features/profile/components/ProfileErrorState";
 
 export default function ProfilePage() {
-  const { profile, isLoading, error } = useUserProfile();
+  const { profile, isLoading, error, refetchProfile } = useUserProfile();
 
-  if (isLoading)
-    return <div className="p-8 text-slate-400">Loading profile...</div>;
-  if (error || !profile)
-    return <div className="p-8 text-red-400">Failed to load profile.</div>;
+  if (isLoading) return <ProfileSkeleton />;
+  if (error || !profile) {
+    return (
+      <ProfileErrorState
+        message={error?.message}
+        onRetry={() => refetchProfile()}
+      />
+    );
+  }
 
   return (
     <div className="mx-auto max-w-7xl p-6 lg:p-8">
