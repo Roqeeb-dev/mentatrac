@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ProfileClient from "./Client";
 
 export const metadata: Metadata = {
   title: "Profile & Settings",
@@ -7,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function ProfilePage() {
-  return <div>Profile Content</div>;
+  return <ProfileClient />;
 }
