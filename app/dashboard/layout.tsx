@@ -51,7 +51,6 @@ export default function DashboardLayout({
         onLogCheckIn: handleOpenCheckIn,
       }}
       topbarProps={{
-        title: "Dashboard",
         dateDisplay: "Mon 17 Aug",
         onCheckIn: handleOpenCheckIn,
       }}

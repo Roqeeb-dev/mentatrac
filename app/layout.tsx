@@ -28,7 +28,10 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mentatrac",
+  title: {
+    default: "Mentatrac",
+    template: "%s | Mentatrac",
+  },
   description: "Track your mood and mental wellness, one check-in at a time.",
 };
 
