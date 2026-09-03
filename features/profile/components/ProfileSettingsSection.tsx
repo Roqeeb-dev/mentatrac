@@ -3,11 +3,18 @@
 import { useState, useEffect } from "react";
 import { ChevronRight } from "lucide-react";
 import { UserProfile } from "../types/profile";
+import ChangePasswordModal from "./ChangePasswordModal";
+import SignOutModal from "./SignOutModal";
 
 interface Props {
   profile: UserProfile;
   onToggleNotification?: (key: string, value: boolean) => void;
   onTogglePrivacy?: (key: string, value: boolean) => void;
+  onChangePassword?: (data: {
+    currentPassword: string;
+    newPassword: string;
+  }) => Promise<void> | void;
+  onSignOut?: () => Promise<void> | void;
 }
 
 // Reusable toggle switch component
@@ -50,10 +57,20 @@ export default function ProfileSettingsSection({
   profile,
   onToggleNotification,
   onTogglePrivacy,
+  onChangePassword,
+  onSignOut,
 }: Props) {
-  // Local state for immediate interactive feedback
+  // Toggle states
   const [notifications, setNotifications] = useState(profile.notifications);
   const [privacy, setPrivacy] = useState(profile.privacy);
+
+  // Modal open states
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
+
+  // Modal loading states
+  const [isPasswordLoading, setIsPasswordLoading] = useState(false);
+  const [isSignOutLoading, setIsSignOutLoading] = useState(false);
 
   // Keep state in sync if the profile prop changes upstream
   useEffect(() => {
@@ -72,6 +89,41 @@ export default function ProfileSettingsSection({
   const handlePrivacyToggle = (key: keyof typeof privacy, value: boolean) => {
     setPrivacy((prev) => ({ ...prev, [key]: value }));
     onTogglePrivacy?.(key as string, value);
+  };
+
+  // Handle password submit (with mock latency if no handler provided)
+  const handleChangePasswordSubmit = async (data: {
+    currentPassword: string;
+    newPassword: string;
+  }) => {
+    setIsPasswordLoading(true);
+    try {
+      if (onChangePassword) {
+        await onChangePassword(data);
+      } else {
+        // Mock API call delay
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+      setIsPasswordModalOpen(false);
+    } finally {
+      setIsPasswordLoading(false);
+    }
+  };
+
+  // Handle sign out action (with mock latency if no handler provided)
+  const handleSignOutConfirm = async () => {
+    setIsSignOutLoading(true);
+    try {
+      if (onSignOut) {
+        await onSignOut();
+      } else {
+        // Mock API call delay
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+      setIsSignOutModalOpen(false);
+    } finally {
+      setIsSignOutLoading(false);
+    }
   };
 
   return (
@@ -216,11 +268,19 @@ export default function ProfileSettingsSection({
           Account
         </h3>
         <div className="mt-5 space-y-4">
-          <button className="block w-full text-left text-sm font-semibold text-slate-900 transition-colors hover:opacity-80">
+          <button
+            type="button"
+            onClick={() => setIsPasswordModalOpen(true)}
+            className="block w-full text-left text-sm font-semibold text-slate-900 transition-colors hover:opacity-80"
+          >
             Change password
           </button>
 
-          <button className="block w-full text-left text-sm font-semibold text-[#5B46F6] transition-colors hover:opacity-80">
+          <button
+            type="button"
+            onClick={() => setIsSignOutModalOpen(true)}
+            className="block w-full text-left text-sm font-semibold text-[#5B46F6] transition-colors hover:opacity-80"
+          >
             Sign out
           </button>
 
@@ -234,6 +294,21 @@ export default function ProfileSettingsSection({
           </div>
         </div>
       </SectionCard>
+
+      {/* MODALS */}
+      <ChangePasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+        onSubmit={handleChangePasswordSubmit}
+        loading={isPasswordLoading}
+      />
+
+      <SignOutModal
+        isOpen={isSignOutModalOpen}
+        onClose={() => setIsSignOutModalOpen(false)}
+        onConfirm={handleSignOutConfirm}
+        loading={isSignOutLoading}
+      />
     </div>
   );
 }
