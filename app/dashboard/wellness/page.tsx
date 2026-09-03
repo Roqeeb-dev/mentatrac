@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import WellnessClient from "./Client";
 
 export const metadata: Metadata = {
   title: "Wellness",
@@ -7,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function WellnessPage() {
-  return <div>Wellness Content</div>;
+  return <WellnessClient />;
 }

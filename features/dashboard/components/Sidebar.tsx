@@ -242,7 +242,7 @@ export function Sidebar({
 
   return (
     <>
-      <div className="hidden lg:block lg:h-screen lg:shrink-0">
+      <div className="hidden lg:sticky lg:top-0 lg:block lg:h-screen lg:shrink-0 lg:self-start">
         {sidebarContent}
       </div>
 
