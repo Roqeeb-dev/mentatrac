@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Profile & Settings | Mentatrac",
+  title: "Profile & Settings",
   description:
     "Manage your account settings, personal preferences, and notification details.",
 };

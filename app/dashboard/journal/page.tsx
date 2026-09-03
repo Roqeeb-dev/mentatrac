@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Journal | Mentatrac",
+  title: "Journal",
   description:
     "Reflect on your daily thoughts, log personal entries, and review past reflections.",
 };

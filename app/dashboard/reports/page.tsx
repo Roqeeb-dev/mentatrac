@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Reports | Mentatrac",
+  title: "Reports",
   description:
     "Analyze long-term mood analytics, wellness trends, and mental health reports.",
 };
