@@ -1,7 +1,11 @@
-export default function Wellness() {
-  return (
-    <main>
-      <h1>This is the dashboard wellness page</h1>
-    </main>
-  );
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Wellness | Mentatrac",
+  description:
+    "Explore guided breathing techniques, mindfulness exercises, and wellness tools.",
+};
+
+export default function WellnessPage() {
+  return <div>Wellness Content</div>;
 }

@@ -1,7 +1,11 @@
-export default function Profile() {
-  return (
-    <main>
-      <h1>This is the dashboard profile page</h1>
-    </main>
-  );
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Profile & Settings | Mentatrac",
+  description:
+    "Manage your account settings, personal preferences, and notification details.",
+};
+
+export default function ProfilePage() {
+  return <div>Profile Content</div>;
 }

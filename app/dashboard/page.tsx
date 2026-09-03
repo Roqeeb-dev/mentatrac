@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 export default function Dashboard() {
   return (
     <main>
@@ -5,3 +7,9 @@ export default function Dashboard() {
     </main>
   );
 }
+
+export const metadata: Metadata = {
+  title: "Dashboard | Mentatrac",
+  description:
+    "Overview of your daily mood trends, check-in streaks, and wellness insights.",
+};
