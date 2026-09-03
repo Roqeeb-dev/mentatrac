@@ -23,7 +23,7 @@ export default function WellnessClient() {
   const showHero = activeCategory === "All";
 
   return (
-    <div className="mx-auto max-w-[1400px] space-y-8 p-6 sm:p-8">
+    <div className="mx-auto max-w-[1400px] space-y-8 p-2 md:p-0">
       {/* Header & Filter Tabs */}
       <WellnessHeader
         categories={WellnessCategories}

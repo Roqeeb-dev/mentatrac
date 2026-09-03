@@ -59,7 +59,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl p-3">
+    <div className="mx-auto max-w-7xl p-3 md:p-0">
       {/* 2-Column Responsive Layout Shell */}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[340px_1fr]">
         {/* Left Column: User Overview */}
