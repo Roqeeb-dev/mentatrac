@@ -9,7 +9,7 @@ export default function Dashboard() {
 }
 
 export const metadata: Metadata = {
-  title: "Dashboard | Mentatrac",
+  title: "Dashboard",
   description:
     "Overview of your daily mood trends, check-in streaks, and wellness insights.",
 };
