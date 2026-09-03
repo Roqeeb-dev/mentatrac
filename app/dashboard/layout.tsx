@@ -12,10 +12,10 @@ import type { NavItem } from "@/features/dashboard/types/dashboard";
 
 const NAV_ITEMS: NavItem[] = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Journal", href: "/journal", icon: BookOpen },
-  { name: "Reports", href: "/reports", icon: BarChart3 },
-  { name: "Wellness", href: "/wellness", icon: HeartPulse },
-  { name: "Profile", href: "/profile", icon: User },
+  { name: "Journal", href: "/dashboard/journal", icon: BookOpen },
+  { name: "Reports", href: "/dashboard/reports", icon: BarChart3 },
+  { name: "Wellness", href: "/dashboard/wellness", icon: HeartPulse },
+  { name: "Profile", href: "/dashboard/profile", icon: User },
 ];
 
 export default function DashboardLayout({
