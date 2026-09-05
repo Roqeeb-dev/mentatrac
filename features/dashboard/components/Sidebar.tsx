@@ -43,6 +43,15 @@ export function Sidebar({
       .slice(0, 2);
   };
 
+  const handleCheckInClick = () => {
+    if (onLogCheckIn) {
+      onLogCheckIn();
+    }
+    if (onClose) {
+      onClose();
+    }
+  };
+
   const sidebarContent = (
     <aside
       className={cn(
@@ -171,7 +180,6 @@ export function Sidebar({
                   )}
                 </div>
 
-                {/* Active Indicator or Badge */}
                 {!isCollapsed &&
                   (isActive ? (
                     <span className="h-2 w-2 rounded-full bg-white shadow-glow shrink-0" />
@@ -193,7 +201,7 @@ export function Sidebar({
             variant="primary"
             size="md"
             fullWidth
-            onClick={onLogCheckIn}
+            onClick={handleCheckInClick}
             className={cn(
               "border border-white/10 bg-white/10 text-white font-medium hover:bg-white/20 transition-all shadow-none",
               isCollapsed && "px-0 justify-center",

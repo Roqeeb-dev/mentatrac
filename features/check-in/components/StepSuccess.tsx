@@ -2,6 +2,7 @@
 
 import { CheckInRecord } from "../types/checkIn";
 import { MOODS } from "../types/checkInOptions";
+import { Button } from "@/components/ui/Button";
 
 interface StepSuccessProps {
   record: CheckInRecord | null;
@@ -48,13 +49,14 @@ export function StepSuccess({ record, onClose }: StepSuccessProps) {
         ))}
       </div>
 
-      <button
+      <Button
         type="button"
         onClick={onClose}
-        className="w-full sm:w-auto px-8 py-2.5 rounded-2xl bg-violet-600 text-white font-medium text-sm hover:bg-violet-700 transition-colors shadow-xs"
+        variant="primary"
+        className="w-full sm:w-auto px-8"
       >
         Done
-      </button>
+      </Button>
     </div>
   );
 }

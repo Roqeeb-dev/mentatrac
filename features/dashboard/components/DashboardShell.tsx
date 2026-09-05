@@ -4,6 +4,7 @@ import { useState, ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar, SidebarProps } from "./Sidebar";
 import { Topbar, TopbarProps } from "./Topbar";
+import { CheckInModal } from "@/features/check-in/components/CheckInModal";
 
 export interface DashboardShellProps {
   children: ReactNode;
@@ -25,10 +26,14 @@ export function DashboardShell({
   topbarProps,
 }: DashboardShellProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCheckInOpen, setIsCheckInOpen] = useState(false);
   const pathname = usePathname();
 
   const currentTitle =
     topbarProps?.title ?? ROUTE_TITLES[pathname] ?? "Dashboard";
+
+  const handleOpenCheckIn = () => setIsCheckInOpen(true);
+  const handleCloseCheckIn = () => setIsCheckInOpen(false);
 
   return (
     <div className="flex min-h-screen bg-[#F8F9FC]">
@@ -36,6 +41,10 @@ export function DashboardShell({
         {...sidebarProps}
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
+        onLogCheckIn={() => {
+          sidebarProps.onLogCheckIn?.();
+          handleOpenCheckIn();
+        }}
       />
 
       <div className="flex flex-1 flex-col min-w-0">
@@ -43,9 +52,15 @@ export function DashboardShell({
           {...topbarProps}
           title={currentTitle}
           onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
+          onCheckIn={() => {
+            topbarProps?.onCheckIn?.();
+            handleOpenCheckIn();
+          }}
         />
         <main className="flex-1 p-4 lg:p-8">{children}</main>
       </div>
+
+      <CheckInModal isOpen={isCheckInOpen} onClose={handleCloseCheckIn} />
     </div>
   );
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui/Button";
+
 interface StepNoteProps {
   note: string;
   onNoteChange: (value: string) => void;
@@ -43,22 +45,25 @@ export function StepNote({
       </div>
 
       <div className="flex items-center justify-between pt-2">
-        <button
+        <Button
           type="button"
           onClick={onBack}
           disabled={isSubmitting}
-          className="text-xs font-semibold text-slate-400 hover:text-slate-600 transition-colors"
+          variant="ghost"
+          size="sm"
+          className="!text-slate-400 hover:!text-slate-600"
         >
           &larr; Back
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={onSubmit}
           disabled={isSubmitting}
-          className="px-6 py-2.5 rounded-2xl bg-violet-600 text-white font-medium text-sm hover:bg-violet-700 disabled:opacity-50 transition-colors shadow-xs"
+          loading={isSubmitting}
+          variant="primary"
         >
           {isSubmitting ? "Saving..." : "Save check-in ✓"}
-        </button>
+        </Button>
       </div>
     </div>
   );
