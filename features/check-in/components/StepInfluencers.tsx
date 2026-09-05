@@ -56,7 +56,12 @@ export function StepInfluencers({
         >
           &larr; Back
         </Button>
-        <Button type="button" onClick={onContinue} variant="primary">
+        <Button
+          type="button"
+          onClick={onContinue}
+          variant="primary"
+          disabled={selectedInfluencers.length === 0}
+        >
           Continue ({selectedInfluencers.length}) &rarr;
         </Button>
       </div>

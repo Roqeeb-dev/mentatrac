@@ -56,7 +56,12 @@ export function StepEmotions({
         >
           &larr; Back
         </Button>
-        <Button type="button" onClick={onContinue} variant="primary">
+        <Button
+          type="button"
+          onClick={onContinue}
+          variant="primary"
+          disabled={selectedEmotions.length === 0}
+        >
           Continue ({selectedEmotions.length}) &rarr;
         </Button>
       </div>

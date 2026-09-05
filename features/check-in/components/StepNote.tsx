@@ -58,7 +58,7 @@ export function StepNote({
         <Button
           type="button"
           onClick={onSubmit}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !note}
           loading={isSubmitting}
           variant="primary"
         >
