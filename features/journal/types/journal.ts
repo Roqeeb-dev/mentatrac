@@ -1,6 +1,6 @@
-import { MoodScore } from "@/features/check-in/types/checkIn";
-
 export type MoodLabel = "Radiant" | "Good" | "Okay" | "Tough" | "Hard";
+
+export type JournalFilter = "All" | MoodLabel;
 
 export interface JournalEntry {
   id: string;
@@ -8,21 +8,20 @@ export interface JournalEntry {
   content: string;
   emoji?: string;
   moodTag?: MoodLabel;
-  moodScore?: MoodScore;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
-export type JournalFilter = "All" | MoodLabel;
+export interface CreateJournalInput {
+  title: string;
+  content: string;
+  emoji?: string;
+}
+
+export type UpdateJournalInput = Partial<CreateJournalInput>;
 
 export interface JournalStats {
   totalEntries: number;
   dayStreak: number;
   totalWords: number;
 }
-
-export type CreateJournalInput = Omit<
-  JournalEntry,
-  "id" | "createdAt" | "updatedAt"
->;
-export type UpdateJournalInput = Partial<CreateJournalInput>;

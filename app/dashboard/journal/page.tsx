@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { JournalShell } from "@/features/journal/components/JournalShell";
 
 export const metadata: Metadata = {
   title: "Journal",
@@ -7,9 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function JournalPage() {
-  return (
-    <div>
-      <h1>Journal page</h1>
-    </div>
-  );
+  return <JournalShell />;
 }
