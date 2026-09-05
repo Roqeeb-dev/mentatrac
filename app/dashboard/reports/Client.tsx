@@ -20,7 +20,7 @@ export default function ReportsClient() {
     return <ReportsErrorState message={error || undefined} onRetry={refetch} />;
 
   return (
-    <div className="mx-auto max-w-7xl p-6 lg:p-8 space-y-8">
+    <div className="mx-auto max-w-7xl p-2 md:p-0 space-y-8">
       <ReportsHeader timeRange={timeRange} onTimeRangeChange={setTimeRange} />
 
       <MetricCards metrics={data.metrics} />
