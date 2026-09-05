@@ -32,31 +32,63 @@ export function ReportsSkeleton() {
         ))}
       </div>
 
-      {/* Row 2: Large Mood Trend Line Chart */}
-      <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-6">
-        <div className="flex items-center justify-between">
+      {/* Row 2: Large Mood Trend Line Chart Skeleton */}
+      <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-4">
+        <div className="flex items-center justify-between pb-2">
           <Skeleton className="h-5 w-28 rounded-md" />
           <div className="flex items-center gap-4">
             <Skeleton className="h-3 w-16 rounded-md" />
             <Skeleton className="h-3 w-16 rounded-md" />
           </div>
         </div>
-        {/* Chart Line Placeholder */}
-        <div className="h-52 w-full flex items-end gap-3 pt-6">
-          {[40, 65, 45, 80, 50, 75, 40, 68, 70, 52, 78, 60, 48, 64, 72].map(
-            (height, idx) => (
-              <div
-                key={idx}
-                className="flex-1 flex flex-col items-center gap-2 h-full justify-end"
-              >
-                <Skeleton
-                  className="w-full rounded-t-sm"
-                  style={{ height: `${height}%` }}
-                />
-                <Skeleton className="h-3 w-6 rounded-md" />
-              </div>
-            ),
-          )}
+
+        {/* Wavy Line Chart Skeleton Placeholder */}
+        <div className="relative h-48 w-full flex flex-col justify-between pt-2">
+          <div className="relative h-36 w-full overflow-hidden">
+            {/* Smooth SVG Wavy Skeleton Curve */}
+            <svg
+              className="absolute inset-0 h-full w-full stroke-slate-200"
+              viewBox="0 0 1000 120"
+              fill="none"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M0,70 C50,20 80,30 120,15 C160,0 200,60 240,75 C280,90 320,20 360,15 C400,10 440,65 480,70 C520,75 560,15 600,15 C640,15 680,75 720,85 C760,95 800,20 840,15 C880,10 920,60 960,70 C980,75 1000,40 1000,40"
+                strokeWidth="4"
+                strokeLinecap="round"
+              />
+            </svg>
+
+            {/* Skeleton Node Circles along the spline curve */}
+            <div className="absolute inset-0 flex items-center justify-between px-2">
+              {[
+                "top-[60%]",
+                "top-[20%]",
+                "top-[10%]",
+                "top-[65%]",
+                "top-[10%]",
+                "top-[60%]",
+                "top-[10%]",
+                "top-[70%]",
+                "top-[10%]",
+                "top-[60%]",
+              ].map((topPos, idx) => (
+                <div
+                  key={idx}
+                  className={`relative ${topPos} flex items-center justify-center`}
+                >
+                  <Skeleton className="h-3.5 w-3.5 rounded-full ring-4 ring-white" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* X-Axis Date Labels Skeleton */}
+          <div className="flex justify-between items-center px-2 pt-2">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <Skeleton key={i} className="h-3 w-10 rounded-md" />
+            ))}
+          </div>
         </div>
       </div>
 

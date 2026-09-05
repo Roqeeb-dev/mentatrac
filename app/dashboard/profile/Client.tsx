@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import { useUserProfile } from "@/features/profile/hooks/useUserProfile";
 import ProfileOverviewCard from "@/features/profile/components/ProfileOverviewCard";
 import ProfileSettingsSection from "@/features/profile/components/ProfileSettingsSection";
@@ -7,7 +8,6 @@ import { ProfileSkeleton } from "@/features/profile/components/ProfileSkeleton";
 import { ProfileErrorState } from "@/features/profile/components/ProfileErrorState";
 import { UserProfile } from "@/features/profile/types/profile";
 
-// Mock profile data pending api integration
 const mockProfileData: UserProfile = {
   id: "usr_123456",
   fullName: "Alex Johnson",
@@ -37,30 +37,49 @@ const mockProfileData: UserProfile = {
 };
 
 export default function ProfilePage() {
-  // Set to true to preview mock data, false to use your custom hook
   const USE_MOCK_DATA = true;
 
   const hookData = useUserProfile();
 
+  // Simulated mock loading state
+  const [isMockLoading, setIsMockLoading] = useState(USE_MOCK_DATA);
+
+  const triggerMockFetch = useCallback(() => {
+    setIsMockLoading(true);
+    const timer = setTimeout(() => {
+      setIsMockLoading(false);
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (USE_MOCK_DATA) {
+      const cleanup = triggerMockFetch();
+      return cleanup;
+    }
+  }, [USE_MOCK_DATA, triggerMockFetch]);
+
   const profile = USE_MOCK_DATA ? mockProfileData : hookData.profile;
-  const isLoading = USE_MOCK_DATA ? false : hookData.isLoading;
+  const isLoading = USE_MOCK_DATA ? isMockLoading : hookData.isLoading;
   const error = USE_MOCK_DATA ? null : hookData.error;
-  const refetchProfile = hookData.refetchProfile;
+
+  const handleRetry = () => {
+    if (USE_MOCK_DATA) {
+      triggerMockFetch();
+    } else {
+      hookData.refetchProfile?.();
+    }
+  };
 
   if (isLoading) return <ProfileSkeleton />;
 
   if (error || !profile) {
-    return (
-      <ProfileErrorState
-        message={error?.message}
-        onRetry={() => refetchProfile?.()}
-      />
-    );
+    return <ProfileErrorState message={error?.message} onRetry={handleRetry} />;
   }
 
   return (
     <div className="mx-auto max-w-7xl p-3 md:p-0">
-      {/* 2-Column Responsive Layout Shell */}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[340px_1fr]">
         {/* Left Column: User Overview */}
         <aside className="flex flex-col gap-6">
