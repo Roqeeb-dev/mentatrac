@@ -31,10 +31,10 @@ export function JournalSidebar({
   stats,
 }: JournalSidebarProps) {
   return (
-    <aside className="w-[320px] flex-shrink-0 border-r border-slate-100 bg-[#FAFAFC] flex flex-col h-full">
+    <aside className="w-[300px] flex-shrink-0 border-r border-slate-100 bg-[#FAFAFC] flex flex-col h-full">
       <SidebarHeader onStartNewEntry={onStartNewEntry} />
 
-      <div className="p-4 space-y-3 border-b border-slate-100/80">
+      <div className="p-2 space-y-2 border-b border-slate-100/80">
         <EntrySearchInput value={searchQuery} onChange={onSearchChange} />
         <MoodFilterPills
           activeFilter={activeFilter}

@@ -13,7 +13,7 @@ export function MoodFilterPills({
   onFilterChange,
 }: MoodFilterPillsProps) {
   return (
-    <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+    <div className="flex items-center flex-wrap justify-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
       {FILTER_OPTIONS.map((filter) => {
         const isActive = activeFilter === filter.label;
         return (
