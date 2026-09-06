@@ -13,7 +13,7 @@ export function StepSuccess({ record, onClose }: StepSuccessProps) {
   const moodObj = MOODS.find((m) => m.value === record?.mood) || MOODS[2];
 
   return (
-    <div className="text-center space-y-6 py-2">
+    <div className="text-center space-y-6">
       <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 text-4xl shadow-inner">
         {moodObj.emoji}
       </div>
@@ -22,7 +22,7 @@ export function StepSuccess({ record, onClose }: StepSuccessProps) {
         <h2 className="text-2xl font-bold tracking-tight text-slate-900 font-serif">
           Check-in saved
         </h2>
-        <p className="mt-1 text-xs text-slate-500 max-w-xs mx-auto">
+        <p className="mt-1 text-xs text-slate-500 max-w-[200px] mx-auto">
           You felt{" "}
           <span className="font-semibold text-slate-700">{moodObj.label}</span>.
           Showing up for yourself daily makes a real difference.
@@ -30,7 +30,7 @@ export function StepSuccess({ record, onClose }: StepSuccessProps) {
       </div>
 
       {/* Selected Tag Badges */}
-      <div className="flex flex-wrap items-center justify-center gap-1.5 max-w-xs mx-auto">
+      <div className="flex flex-wrap items-center justify-center gap-1.5 max-w-[400px] mx-auto">
         {record?.emotions.map((e) => (
           <span
             key={e}

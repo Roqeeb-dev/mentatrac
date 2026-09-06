@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
+import DashboardClient from "./Client";
 
 export default function Dashboard() {
-  return (
-    <main>
-      <h1>This is the dashboard home page</h1>
-    </main>
-  );
+  return <DashboardClient />;
 }
 
 export const metadata: Metadata = {

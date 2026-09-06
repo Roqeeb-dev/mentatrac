@@ -5,17 +5,21 @@ import { Button } from "@/components/ui/Button";
 
 export interface TopbarProps {
   title?: string;
-  dateDisplay?: string;
   onOpenMobileMenu?: () => void;
   onCheckIn?: () => void;
 }
 
 export function Topbar({
   title = "Dashboard",
-  dateDisplay,
   onOpenMobileMenu,
   onCheckIn,
 }: TopbarProps) {
+  const formattedDate = new Date().toLocaleDateString("en-US", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+
   return (
     <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-gray-100 bg-white/80 px-4 backdrop-blur-md lg:px-8">
       <div className="flex items-center gap-3">
@@ -34,11 +38,9 @@ export function Topbar({
       </div>
 
       <div className="flex items-center gap-3">
-        {dateDisplay && (
-          <span className="hidden text-caption font-semibold text-text-tertiary sm:inline-block">
-            {dateDisplay}
-          </span>
-        )}
+        <span className="hidden text-caption font-semibold text-text-tertiary sm:inline-block">
+          {formattedDate}
+        </span>
         {onCheckIn && (
           <Button
             variant="primary"
