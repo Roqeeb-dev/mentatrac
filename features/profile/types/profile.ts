@@ -53,6 +53,7 @@ export interface UserProfile {
   email: string;
   avatarUrl?: string | null;
   memberSince?: string;
+  streak?: number;
   wellnessScore: number;
   totalCheckIns: number;
   currentStreakDays: number;
