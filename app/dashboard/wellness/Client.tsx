@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { WellnessCategory } from "@/features/wellness/types/wellness";
+import {
+  WellnessCategory,
+  WellnessTip,
+} from "@/features/wellness/types/wellness";
 import {
   WellnessCategories,
   todaysPick,
@@ -10,9 +13,11 @@ import {
 import { WellnessHeader } from "@/features/wellness/components/WellnessHeader";
 import { TodaysPickBanner } from "@/features/wellness/components/TodaysPickBanner";
 import { WellnessCard } from "@/features/wellness/components/WellnessCard";
+import { WellnessTipModal } from "@/features/wellness/components/WellnessTipModal";
 
 export default function WellnessClient() {
   const [activeCategory, setActiveCategory] = useState<WellnessCategory>("All");
+  const [selectedTip, setSelectedTip] = useState<WellnessTip | null>(null);
 
   // Filter content based on active tab
   const filteredTips =
@@ -37,7 +42,7 @@ export default function WellnessClient() {
       {/* Content Grid */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {filteredTips.map((tip) => (
-          <WellnessCard key={tip.id} tip={tip} />
+          <WellnessCard key={tip.id} tip={tip} onReadMore={setSelectedTip} />
         ))}
       </div>
 
@@ -49,6 +54,11 @@ export default function WellnessClient() {
           professional.
         </p>
       </div>
+
+      <WellnessTipModal
+        tip={selectedTip}
+        onClose={() => setSelectedTip(null)}
+      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useJournalEntries } from "./useJournalEntries";
 import { useJournalMutations } from "./useJournalMutations";
-import { useJournalUiStore } from "@/stores/useJournalUiStore";
+import { useJournalUiStore } from "../hooks/useJournalUiStore";
 import {
   calculateJournalStats,
   filterEntries,
