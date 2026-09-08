@@ -75,5 +75,5 @@ export function formatEntryDate(createdAt: string): string {
   if (diffDays === 1) return "Yesterday";
   if (diffDays > 1 && diffDays < 7) return `${diffDays} days ago`;
 
-  return date.toLocaleDateString("en-US", { day: "numeric", month: "short" });
+  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 }

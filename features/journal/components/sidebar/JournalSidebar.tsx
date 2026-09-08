@@ -8,6 +8,7 @@ import { JournalEntryList } from "./JournalEntryList";
 import { SidebarStats } from "./SidebarStats";
 
 interface JournalSidebarProps {
+  className?: string;
   entries: JournalEntry[];
   selectedId: string | null;
   searchQuery: string;
@@ -20,6 +21,7 @@ interface JournalSidebarProps {
 }
 
 export function JournalSidebar({
+  className = "flex flex-col",
   entries,
   selectedId,
   searchQuery,
@@ -31,7 +33,9 @@ export function JournalSidebar({
   stats,
 }: JournalSidebarProps) {
   return (
-    <aside className="w-[300px] flex-shrink-0 border-r border-slate-100 bg-[#FAFAFC] flex flex-col h-full">
+    <aside
+      className={`w-full md:w-[300px] flex-shrink-0 border-r border-slate-100 bg-[#FAFAFC] h-full ${className}`}
+    >
       <SidebarHeader onStartNewEntry={onStartNewEntry} />
 
       <div className="p-2 space-y-2 border-b border-slate-100/80">
