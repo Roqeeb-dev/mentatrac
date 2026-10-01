@@ -50,10 +50,14 @@ export interface CheckInPayload {
   emotions: EmotionCategory[];
   influencers: InfluencerCategory[];
   note?: string;
+  /** "YYYY-MM-DD". Defaults to today if omitted. */
+  date?: string;
 }
 
-export interface CheckInRecord extends CheckInPayload {
+export interface CheckInRecord extends Omit<CheckInPayload, "date"> {
   id: string;
+  userId: string;
+  date: string;
   createdAt: string;
 }
 

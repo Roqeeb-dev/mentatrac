@@ -1,4 +1,5 @@
 import { ApiError } from "./errors";
+import { useTokenStore } from "@/stores/auth-token-store";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -18,21 +19,74 @@ function buildUrl(path: string, params?: RequestOptions["params"]) {
   return url.toString();
 }
 
+let refreshPromise: Promise<string | null> | null = null;
+
+async function refreshAccessToken(): Promise<string | null> {
+  if (refreshPromise) return refreshPromise;
+
+  refreshPromise = (async () => {
+    const { refreshToken, setTokens, clearTokens } = useTokenStore.getState();
+    if (!refreshToken) return null;
+
+    try {
+      const res = await fetch(buildUrl("/api/v1/auth/refresh"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      if (!res.ok) {
+        // 401: refresh token invalid/expired/user deleted
+        // 403: refresh token not stored, already rotated, or revoked
+        clearTokens();
+        return null;
+      }
+
+      const data: { accessToken: string; refreshToken: string } =
+        await res.json();
+      setTokens(data); // must persist the NEW refresh token — the old one is now dead
+      return data.accessToken;
+    } catch {
+      clearTokens();
+      return null;
+    } finally {
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+}
+
 async function request<T>(
   path: string,
   options: RequestOptions = {},
 ): Promise<T> {
   const { body, params, headers, ...rest } = options;
+  const isRefreshCall = path.includes("/auth/refresh");
 
-  const res = await fetch(buildUrl(path, params), {
-    ...rest,
-    headers: {
-      "Content-Type": "application/json",
-      ...headers,
-    },
-    credentials: "include",
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-  });
+  const doFetch = () => {
+    const { accessToken } = useTokenStore.getState();
+    return fetch(buildUrl(path, params), {
+      ...rest,
+      headers: {
+        "Content-Type": "application/json",
+        ...(accessToken && !isRefreshCall
+          ? { Authorization: `Bearer ${accessToken}` }
+          : {}),
+        ...headers,
+      },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+  };
+
+  let res = await doFetch();
+
+  if (res.status === 401 && !isRefreshCall) {
+    const newAccessToken = await refreshAccessToken();
+    if (newAccessToken) {
+      res = await doFetch(); // retry exactly once with the refreshed token
+    }
+  }
 
   const isJson = res.headers.get("content-type")?.includes("application/json");
   const data = isJson ? await res.json().catch(() => null) : null;

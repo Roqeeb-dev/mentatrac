@@ -1,6 +1,6 @@
 import type { OnboardingStepSlug } from "@/lib/onboarding/step-order";
 
-export type Gender = "prefer_not_to_say" | "male" | "female" | "non_binary";
+export type Gender = "prefer_not_to_say" | "male" | "female";
 
 export type OnboardingGoal =
   | "reduce_stress"
@@ -34,9 +34,16 @@ export type AuthCredentials = {
 export type SignUpPayload = AuthCredentials;
 export type LoginPayload = AuthCredentials;
 
+export type AuthTokens = {
+  accessToken: string;
+  refreshToken: string;
+};
+
 export type AuthResponse = {
   user: User;
-};
+} & AuthTokens;
+
+export type RefreshResponse = AuthTokens;
 
 export type UpdateOnboardingPayload = Partial<
   Pick<

@@ -1,81 +1,88 @@
+import { ApiJournalEntry, journalApi } from "../api/journalApi";
 import {
-  JournalEntry,
   CreateJournalInput,
-  UpdateJournalInput,
+  JournalEntry,
   JournalStats,
+  MoodLabel,
+  UpdateJournalInput,
 } from "../types/journal";
-import { MOCK_JOURNAL_ENTRIES, MOCK_JOURNAL_STATS } from "../data/mockJournal";
 
-// LocalStorage key for client-side persistence
-const STORAGE_KEY = "mentatrac_journal_entries";
+// Mood mapping: frontend uses the UI's word labels, backend uses a word
+// enum of its own. Same approach as the check-in service.
+const MOOD_TO_API: Record<MoodLabel, string> = {
+  Radiant: "FIVE",
+  Good: "FOUR",
+  Okay: "THREE",
+  Tough: "TWO",
+  Hard: "ONE",
+};
 
-class JournalService {
-  private getStoredEntries(): JournalEntry[] {
-    if (typeof window === "undefined") return MOCK_JOURNAL_ENTRIES;
-    const data = localStorage.getItem(STORAGE_KEY);
-    return data ? JSON.parse(data) : MOCK_JOURNAL_ENTRIES;
-  }
+const API_TO_MOOD: Record<string, MoodLabel> = {
+  FIVE: "Radiant",
+  FOUR: "Good",
+  THREE: "Okay",
+  TWO: "Tough",
+  ONE: "Hard",
+};
 
-  private saveStoredEntries(entries: JournalEntry[]): void {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-    }
-  }
+function fromApiEntry(entry: ApiJournalEntry): JournalEntry {
+  return {
+    id: entry.id,
+    userId: entry.userId,
+    title: entry.title,
+    content: entry.content,
+    moodTag: API_TO_MOOD[entry.mood],
+    createdAt: entry.createdAt,
+    updatedAt: entry.updatedAt,
+  };
+}
 
-  async fetchEntries(): Promise<JournalEntry[]> {
-    return this.getStoredEntries();
-  }
+export const journalService = {
+  async getEntries(): Promise<JournalEntry[]> {
+    const data = await journalApi.list();
+    return data.map(fromApiEntry);
+  },
 
   async createEntry(input: CreateJournalInput): Promise<JournalEntry> {
-    const entries = this.getStoredEntries();
-    const newEntry: JournalEntry = {
-      ...input,
-      id: `entry-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    const updated = [newEntry, ...entries];
-    this.saveStoredEntries(updated);
-    return newEntry;
-  }
+    const entry = await journalApi.create({
+      title: input.title,
+      content: input.content,
+      mood: input.moodTag ? MOOD_TO_API[input.moodTag] : undefined,
+    });
+    return fromApiEntry(entry);
+  },
 
   async updateEntry(
     id: string,
     input: UpdateJournalInput,
   ): Promise<JournalEntry> {
-    const entries = this.getStoredEntries();
-    const index = entries.findIndex((e) => e.id === id);
-    if (index === -1) throw new Error("Entry not found");
-
-    const updatedEntry: JournalEntry = {
-      ...entries[index],
-      ...input,
-      updatedAt: new Date().toISOString(),
-    };
-    entries[index] = updatedEntry;
-    this.saveStoredEntries(entries);
-    return updatedEntry;
-  }
+    const entry = await journalApi.update(id, {
+      title: input.title,
+      content: input.content,
+      mood: input.moodTag ? MOOD_TO_API[input.moodTag] : undefined,
+    });
+    return fromApiEntry(entry);
+  },
 
   async deleteEntry(id: string): Promise<void> {
-    const entries = this.getStoredEntries();
-    const filtered = entries.filter((e) => e.id !== id);
-    this.saveStoredEntries(filtered);
-  }
+    await journalApi.remove(id);
+  },
 
-  async fetchStats(): Promise<JournalStats> {
-    const entries = this.getStoredEntries();
-    const totalWords = entries.reduce((acc, curr) => {
-      const words = curr.content.trim().split(/\s+/).filter(Boolean).length;
-      return acc + words;
+  /**
+   * totalEntries/totalWords are derived from the real entries list.
+   * dayStreak has no backend source yet — held at 0 until that's answered
+   * (see journal-api-changes.md, item 5).
+   */
+  async getStats(): Promise<JournalStats> {
+    const entries = await this.getEntries();
+    const totalWords = entries.reduce((sum, entry) => {
+      return sum + entry.content.trim().split(/\s+/).filter(Boolean).length;
     }, 0);
 
     return {
       totalEntries: entries.length,
-      dayStreak: MOCK_JOURNAL_STATS.dayStreak,
+      dayStreak: 0, // TODO: wire up once backend confirms journal streak tracking
       totalWords,
     };
-  }
-}
-
-export const journalService = new JournalService();
+  },
+};

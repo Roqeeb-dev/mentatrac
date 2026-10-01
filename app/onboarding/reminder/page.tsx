@@ -16,7 +16,7 @@ export default function ReminderPage() {
 
   const handleNext = () => {
     // Process reminder configuration state
-    router.push("/onboarding/complete"); // Route to Step 8
+    router.replace("/login");
   };
 
   return (
@@ -64,7 +64,7 @@ export default function ReminderPage() {
         </Button>
 
         <Link
-          href="/onboarding/complete"
+          href="/login"
           className="text-center text-body-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
         >
           Skip for now
