@@ -28,9 +28,6 @@ export function JournalEntryCard({
         <h3 className="text-xs font-bold text-slate-900 truncate">
           {entry.title}
         </h3>
-        {entry.emoji && (
-          <span className="text-xs flex-shrink-0">{entry.emoji}</span>
-        )}
       </div>
 
       <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed mb-2.5">

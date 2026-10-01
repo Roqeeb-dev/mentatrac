@@ -8,9 +8,6 @@ import { JournalEmptyState } from "./JournalEmptyState";
 export function JournalShell() {
   const journal = useJournal();
 
-  // On mobile, only one pane is visible at a time. Selecting or creating
-  // an entry switches the view to the editor; cancelling/deleting switches
-  // back to the list. On md+ screens both panes stay visible side by side.
   const isEditorActive = !!journal.selectedEntry || journal.isCreating;
 
   return (
