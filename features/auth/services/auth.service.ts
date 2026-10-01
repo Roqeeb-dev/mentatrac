@@ -1,4 +1,3 @@
-```ts
 import { apiClient } from "@/lib/api/client";
 import type { AuthResponse, LoginPayload, SignUpPayload } from "@/types/api";
 
@@ -13,5 +12,3 @@ export const authService = {
 
   getCurrentUser: () => apiClient.get<AuthResponse>("/auth/me"),
 };
-```
-
