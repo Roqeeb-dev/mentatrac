@@ -20,8 +20,8 @@ jobs:
             set -e
             # Deploy from public GitHub repository over HTTPS
             cd ~/mentatrac
-            git fetch origin
-            git reset --hard origin/main
+            git fetch https://github.com/Roqeeb-dev/mentatrac.git main
+            git reset --hard FETCH_HEAD
             npm ci
             npm run build
             pm2 restart mentatrac-frontend --update-env
