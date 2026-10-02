@@ -10,26 +10,20 @@ import type {
 
 export const authService = {
   async signUp(payload: SignUpPayload) {
-    const data = await apiClient.post<AuthResponse>(
-      "/api/v1/auth/register",
-      payload,
-    );
+    const data = await apiClient.post<AuthResponse>("/auth/register", payload);
     useTokenStore.getState().setTokens(data);
     return data;
   },
 
   async login(payload: LoginPayload) {
-    const data = await apiClient.post<AuthResponse>(
-      "/api/v1/auth/login",
-      payload,
-    );
+    const data = await apiClient.post<AuthResponse>("/auth/login", payload);
     useTokenStore.getState().setTokens(data);
     return data;
   },
 
   async logout() {
     try {
-      await apiClient.post<void>("/api/v1/auth/logout");
+      await apiClient.post<void>("/auth/logout");
     } finally {
       useTokenStore.getState().clearTokens();
     }
@@ -40,10 +34,9 @@ export const authService = {
     if (!refreshToken) return null;
 
     try {
-      const data = await apiClient.post<RefreshResponse>(
-        "/api/v1/auth/refresh",
-        { refreshToken },
-      );
+      const data = await apiClient.post<RefreshResponse>("/auth/refresh", {
+        refreshToken,
+      });
       setTokens(data);
       return data;
     } catch {
@@ -52,5 +45,5 @@ export const authService = {
     }
   },
 
-  getCurrentUser: () => apiClient.get<User>("/api/v1/users/me"),
+  getCurrentUser: () => apiClient.get<User>("/users/me"),
 };

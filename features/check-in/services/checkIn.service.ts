@@ -46,7 +46,7 @@ export const checkInService = {
    * Fetch all check-in records for the current user.
    */
   async getCheckIns(): Promise<CheckInRecord[]> {
-    const data = await apiClient.get<ApiCheckInRecord[]>("/api/v1/check-ins");
+    const data = await apiClient.get<ApiCheckInRecord[]>("/check-ins");
     return data.map(fromApiRecord);
   },
 
@@ -63,10 +63,7 @@ export const checkInService = {
       date: payload.date ?? new Date().toISOString().split("T")[0],
     };
 
-    const record = await apiClient.post<ApiCheckInRecord>(
-      "/api/v1/check-ins",
-      body,
-    );
+    const record = await apiClient.post<ApiCheckInRecord>("/check-ins", body);
     return fromApiRecord(record);
   },
 };

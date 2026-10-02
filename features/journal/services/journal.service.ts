@@ -7,8 +7,6 @@ import {
   UpdateJournalInput,
 } from "../types/journal";
 
-// Mood mapping: frontend uses the UI's word labels, backend uses a word
-// enum of its own. Same approach as the check-in service.
 const MOOD_TO_API: Record<MoodLabel, string> = {
   Radiant: "FIVE",
   Good: "FOUR",

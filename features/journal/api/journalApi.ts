@@ -20,10 +20,10 @@ export interface ApiJournalCreateBody {
 export type ApiJournalUpdateBody = Partial<ApiJournalCreateBody>;
 
 const JOURNAL_ROUTES = {
-  list: "/api/v1/journal",
-  create: "/api/v1/journal",
-  update: (id: string) => `/api/v1/journal/${id}`,
-  remove: (id: string) => `/api/v1/journal/${id}`,
+  list: "/journal",
+  create: "/journal",
+  update: (id: string) => `/journal/${id}`,
+  remove: (id: string) => `/journal/${id}`,
 };
 
 export const journalApi = {
