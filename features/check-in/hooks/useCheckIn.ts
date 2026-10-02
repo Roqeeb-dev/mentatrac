@@ -10,6 +10,8 @@ import {
   CheckInRecord,
 } from "../types/checkIn";
 import { checkInService } from "../services/checkIn.service";
+import { useQueryClient } from "@tanstack/react-query";
+import { CHECK_INS_QUERY_KEY } from "./useCheckInHistory";
 
 const initialPayload: CheckInPayload = {
   mood: 3, // Default to 'Okay'
@@ -24,6 +26,7 @@ export function useCheckInFlow(onSuccess?: (record: CheckInRecord) => void) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [savedRecord, setSavedRecord] = useState<CheckInRecord | null>(null);
+  const queryClient = useQueryClient();
 
   // Set selected mood (Step 1)
   const setMood = (mood: MoodScore) => {
@@ -74,8 +77,9 @@ export function useCheckInFlow(onSuccess?: (record: CheckInRecord) => void) {
     setError(null);
     try {
       const record = await checkInService.submitCheckIn(payload);
+      queryClient.invalidateQueries({ queryKey: CHECK_INS_QUERY_KEY });
       setSavedRecord(record);
-      setStep(5); // Jump to Success Modal Step
+      setStep(5);
       onSuccess?.(record);
     } catch (err: any) {
       setError(err?.message || "Failed to save check-in. Please try again.");
@@ -83,7 +87,6 @@ export function useCheckInFlow(onSuccess?: (record: CheckInRecord) => void) {
       setIsSubmitting(false);
     }
   };
-
   // Reset state for new entry
   const resetForm = () => {
     setStep(1);
