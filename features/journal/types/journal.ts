@@ -8,6 +8,7 @@ export interface JournalEntry {
   title: string;
   content: string;
   moodTag?: MoodLabel;
+  moodScore?: number;
   createdAt: string;
   updatedAt?: string;
 }
