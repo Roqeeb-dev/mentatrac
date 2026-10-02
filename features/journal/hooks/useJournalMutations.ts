@@ -1,7 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { journalApi } from "../api/journalApi";
 import { journalKeys } from "./useJournalEntries";
-import { CreateJournalInput, UpdateJournalInput } from "../types/journal";
+import {
+  CreateJournalInput,
+  JournalEntry,
+  UpdateJournalInput,
+} from "../types/journal";
 
 export function useJournalMutations() {
   const queryClient = useQueryClient();
@@ -10,7 +14,14 @@ export function useJournalMutations() {
 
   const createEntry = useMutation({
     mutationFn: (input: CreateJournalInput) => journalApi.create(input),
-    onSuccess: invalidate,
+    onSuccess: (created) => {
+      queryClient.setQueryData<JournalEntry[]>(journalKeys.all, (old = []) => [
+        created,
+        ...old,
+      ]);
+
+      invalidate();
+    },
   });
 
   const updateEntry = useMutation({
@@ -21,12 +32,22 @@ export function useJournalMutations() {
       id: string;
       updates: UpdateJournalInput;
     }) => journalApi.update(id, updates),
-    onSuccess: invalidate,
+    onSuccess: (updated) => {
+      queryClient.setQueryData<JournalEntry[]>(journalKeys.all, (old = []) =>
+        old.map((e) => (e.id === updated.id ? updated : e)),
+      );
+      invalidate();
+    },
   });
 
   const deleteEntry = useMutation({
     mutationFn: (id: string) => journalApi.remove(id),
-    onSuccess: invalidate,
+    onSuccess: (_, id) => {
+      queryClient.setQueryData<JournalEntry[]>(journalKeys.all, (old = []) =>
+        old.filter((e) => e.id !== id),
+      );
+      invalidate();
+    },
   });
 
   return { createEntry, updateEntry, deleteEntry };

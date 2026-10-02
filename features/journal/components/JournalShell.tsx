@@ -8,9 +8,14 @@ import { JournalEmptyState } from "./JournalEmptyState";
 export function JournalShell() {
   const journal = useJournal();
 
+  const isEditorActive = !!journal.selectedEntry || journal.isCreating;
+
   return (
     <div className="flex h-screen w-full bg-white overflow-hidden">
       <JournalSidebar
+        className={
+          isEditorActive ? "hidden md:flex md:flex-col" : "flex flex-col"
+        }
         entries={journal.entries}
         selectedId={journal.selectedId}
         searchQuery={journal.searchQuery}
@@ -22,8 +27,12 @@ export function JournalShell() {
         stats={journal.stats}
       />
 
-      <main className="flex-1 flex flex-col h-full bg-white overflow-y-auto">
-        {journal.selectedEntry || journal.isCreating ? (
+      <main
+        className={`${
+          isEditorActive ? "flex flex-col" : "hidden md:flex md:flex-col"
+        } flex-1 h-full bg-white overflow-y-auto`}
+      >
+        {isEditorActive ? (
           <JournalEditor
             entry={journal.selectedEntry}
             isCreating={journal.isCreating}

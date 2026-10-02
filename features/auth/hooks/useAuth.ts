@@ -2,7 +2,12 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authService } from "@/features/auth/services/auth.service";
-import type { LoginPayload, SignUpPayload, User } from "@/types/api";
+import type {
+  LoginPayload,
+  SignUpPayload,
+  User,
+  AuthResponse,
+} from "@/types/api";
 
 export const AUTH_QUERY_KEY = ["auth", "me"] as const;
 
@@ -11,8 +16,7 @@ export function useCurrentUser() {
     queryKey: AUTH_QUERY_KEY,
     queryFn: async () => {
       try {
-        const { user } = await authService.getCurrentUser();
-        return user;
+        return await authService.getCurrentUser();
       } catch {
         return null;
       }
@@ -24,30 +28,29 @@ export function useCurrentUser() {
 
 export function useSignUp() {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (payload: SignUpPayload) => authService.signUp(payload),
+  return useMutation<AuthResponse, Error, SignUpPayload>({
+    mutationFn: (payload) => authService.signUp(payload),
     onSuccess: ({ user }) => {
-      queryClient.setQueryData(AUTH_QUERY_KEY, user);
+      queryClient.setQueryData<User>(AUTH_QUERY_KEY, user);
     },
   });
 }
 
 export function useLogin() {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (payload: LoginPayload) => authService.login(payload),
+  return useMutation<AuthResponse, Error, LoginPayload>({
+    mutationFn: (payload) => authService.login(payload),
     onSuccess: ({ user }) => {
-      queryClient.setQueryData(AUTH_QUERY_KEY, user);
+      queryClient.setQueryData<User>(AUTH_QUERY_KEY, user);
     },
   });
 }
 
 export function useLogout() {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation<void, Error, void>({
     mutationFn: () => authService.logout(),
     onSuccess: () => {
-      queryClient.setQueryData(AUTH_QUERY_KEY, null);
       queryClient.clear();
     },
   });

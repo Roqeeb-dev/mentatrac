@@ -1,23 +1,23 @@
 "use client";
 
-import { ChevronLeft, Sparkles } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export function OnboardingLogo({ inverse = false }: { inverse?: boolean }) {
   return (
-    <div className="flex items-center gap-2">
-      <span
-        className={`flex h-7 w-7 items-center justify-center rounded-lg ${
-          inverse ? "bg-white/15" : "bg-purple-100"
-        }`}
-      >
-        <Sparkles
-          className={`h-4 w-4 ${inverse ? "text-white" : "text-purple-700"}`}
-          strokeWidth={2}
+    <div className="flex items-center gap-2.5">
+      <div className="relative h-7 w-7 shrink-0 transition-transform hover:scale-105">
+        <Image
+          src="/logo.png"
+          alt="Mentatrac Logo"
+          fill
+          className="object-contain"
+          priority
         />
-      </span>
+      </div>
       <span
-        className={`font-display text-heading-sm ${
+        className={`font-serif text-xl font-bold tracking-tight ${
           inverse ? "text-white" : "text-text-primary"
         }`}
       >

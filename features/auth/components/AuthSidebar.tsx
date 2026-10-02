@@ -1,4 +1,4 @@
-import { Sparkles } from "lucide-react";
+import Image from "next/image";
 
 const STATS = [
   { value: "30", label: "check-ins" },
@@ -15,10 +15,16 @@ export function AuthSidebar() {
 
       {/* Brand Logo Header */}
       <div className="relative z-10 flex items-center gap-2.5">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 backdrop-blur-md">
-          <Sparkles className="h-5 w-5 text-amber-300" />
+        <div className="relative h-9 w-9 shrink-0 transition-transform hover:scale-105">
+          <Image
+            src="/logo.png"
+            alt="Mentatrac Logo"
+            fill
+            className="object-contain"
+            priority
+          />
         </div>
-        <span className="font-display text-heading-md font-bold text-white">
+        <span className="font-serif text-2xl font-bold tracking-tight text-white">
           Mentatrac
         </span>
       </div>

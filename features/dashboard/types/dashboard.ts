@@ -39,3 +39,22 @@ export interface QuickExercise {
   duration: string;
   iconBg: string;
 }
+
+export interface NavItem {
+  name: string;
+  href: string;
+  icon: LucideIcon;
+  badge?: number | string;
+}
+
+export interface UserProfileData {
+  name: string;
+  email: string;
+  avatarUrl?: string | null;
+}
+
+export interface TodayMoodData {
+  emoji: string;
+  label: string;
+  streakDays: number;
+}

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { JournalFilter } from "../features/journal/types/journal";
+import { JournalFilter } from "../types/journal";
 
 interface JournalUiState {
   searchQuery: string;

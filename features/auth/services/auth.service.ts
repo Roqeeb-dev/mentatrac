@@ -1,14 +1,56 @@
 import { apiClient } from "@/lib/api/client";
-import type { AuthResponse, LoginPayload, SignUpPayload } from "@/types/api";
+import { useTokenStore } from "@/stores/auth-token-store";
+import type {
+  AuthResponse,
+  LoginPayload,
+  RefreshResponse,
+  SignUpPayload,
+  User,
+} from "@/types/api";
 
 export const authService = {
-  signUp: (payload: SignUpPayload) =>
-    apiClient.post<AuthResponse>("/auth/register", payload),
+  async signUp(payload: SignUpPayload) {
+    const data = await apiClient.post<AuthResponse>(
+      "/api/v1/auth/register",
+      payload,
+    );
+    useTokenStore.getState().setTokens(data);
+    return data;
+  },
 
-  login: (payload: LoginPayload) =>
-    apiClient.post<AuthResponse>("/auth/login", payload),
+  async login(payload: LoginPayload) {
+    const data = await apiClient.post<AuthResponse>(
+      "/api/v1/auth/login",
+      payload,
+    );
+    useTokenStore.getState().setTokens(data);
+    return data;
+  },
 
-  logout: () => apiClient.post<void>("/auth/logout"),
+  async logout() {
+    try {
+      await apiClient.post<void>("/api/v1/auth/logout");
+    } finally {
+      useTokenStore.getState().clearTokens();
+    }
+  },
 
-  getCurrentUser: () => apiClient.get<AuthResponse>("/auth/me"),
+  async refresh() {
+    const { refreshToken, setTokens, clearTokens } = useTokenStore.getState();
+    if (!refreshToken) return null;
+
+    try {
+      const data = await apiClient.post<RefreshResponse>(
+        "/api/v1/auth/refresh",
+        { refreshToken },
+      );
+      setTokens(data);
+      return data;
+    } catch {
+      clearTokens();
+      return null;
+    }
+  },
+
+  getCurrentUser: () => apiClient.get<User>("/api/v1/users/me"),
 };

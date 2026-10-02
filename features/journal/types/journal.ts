@@ -4,9 +4,9 @@ export type JournalFilter = "All" | MoodLabel;
 
 export interface JournalEntry {
   id: string;
+  userId: string;
   title: string;
   content: string;
-  emoji?: string;
   moodTag?: MoodLabel;
   moodScore?: number;
   createdAt: string;
@@ -16,7 +16,7 @@ export interface JournalEntry {
 export interface CreateJournalInput {
   title: string;
   content: string;
-  emoji?: string;
+  moodTag?: MoodLabel;
 }
 
 export type UpdateJournalInput = Partial<CreateJournalInput>;

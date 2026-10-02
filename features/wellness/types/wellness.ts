@@ -14,4 +14,6 @@ export interface WellnessTip {
   duration: string;
   description: string;
   isTodaysPick?: boolean;
+  whyItWorks?: string;
+  steps?: string[];
 }

@@ -124,7 +124,6 @@ export function RecentJournalWidget({
                 <h4 className="text-xs font-bold text-slate-900">
                   {entry.title}
                 </h4>
-                <span className="text-xs">{entry.emoji || "😊"}</span>
               </div>
               <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-2">
                 {entry.content}
