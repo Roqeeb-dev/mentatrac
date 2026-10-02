@@ -1,7 +1,10 @@
 import { ApiError } from "./errors";
 import { useTokenStore } from "@/stores/auth-token-store";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(
+  /\/+$/,
+  "",
+);
 
 type RequestOptions = Omit<RequestInit, "body"> & {
   body?: unknown;
@@ -9,14 +12,17 @@ type RequestOptions = Omit<RequestInit, "body"> & {
 };
 
 function buildUrl(path: string, params?: RequestOptions["params"]) {
-  const base = API_BASE_URL.endsWith("/") ? API_BASE_URL : `${API_BASE_URL}/`;
-  const url = new URL(path.replace(/^\//, ""), base);
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  const search = new URLSearchParams();
+
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined) url.searchParams.set(key, String(value));
+      if (value !== undefined) search.set(key, String(value));
     });
   }
-  return url.toString();
+
+  const qs = search.toString();
+  return `${API_BASE_URL}${cleanPath}${qs ? `?${qs}` : ""}`;
 }
 
 let refreshPromise: Promise<string | null> | null = null;
@@ -36,15 +42,13 @@ async function refreshAccessToken(): Promise<string | null> {
       });
 
       if (!res.ok) {
-        // 401: refresh token invalid/expired/user deleted
-        // 403: refresh token not stored, already rotated, or revoked
         clearTokens();
         return null;
       }
 
       const data: { accessToken: string; refreshToken: string } =
         await res.json();
-      setTokens(data); // must persist the NEW refresh token — the old one is now dead
+      setTokens(data);
       return data.accessToken;
     } catch {
       clearTokens();
@@ -84,7 +88,7 @@ async function request<T>(
   if (res.status === 401 && !isRefreshCall) {
     const newAccessToken = await refreshAccessToken();
     if (newAccessToken) {
-      res = await doFetch(); // retry exactly once with the refreshed token
+      res = await doFetch();
     }
   }
 

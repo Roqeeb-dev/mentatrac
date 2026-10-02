@@ -50,7 +50,7 @@ export interface NavItem {
 export interface UserProfileData {
   name: string;
   email: string;
-  avatarUrl?: string | null;
+  avatarUrl?: string;
 }
 
 export interface TodayMoodData {
