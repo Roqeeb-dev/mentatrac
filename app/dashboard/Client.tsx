@@ -2,11 +2,10 @@
 
 import { useState, useMemo } from "react";
 import { Flame, Check, BookOpen } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 
 import { useJournal } from "@/features/journal/hooks/useJournal";
 import { useUserProfile } from "@/features/profile/hooks/useUserProfile";
-import { checkInService } from "@/features/check-in/services/checkIn.service";
+import { useCheckIns } from "@/features/check-in/hooks/useCheckInHistory";
 
 import { GreetingBanner } from "@/features/dashboard/components/GreetingBanner";
 import { TodayMoodCard } from "@/features/dashboard/components/TodayMoodCard";
@@ -31,22 +30,18 @@ export default function DashboardClient() {
     isError: isJournalError,
   } = useJournal();
   const { profile, isLoading: isLoadingProfile } = useUserProfile();
-
-  const { data: checkIns = [], isLoading: isLoadingCheckIns } = useQuery({
-    queryKey: ["checkIns"],
-    queryFn: () => checkInService.getCheckIns?.() ?? [],
-  });
+  const { data: checkIns = [], isLoading: isLoadingCheckIns } = useCheckIns();
 
   const [isCheckInOpen, setIsCheckInOpen] = useState(false);
 
-  const stats = useMemo(() => {
-    return {
-      dayStreak: profile?.streak ?? profile?.streak ?? 0,
-      totalCheckIns:
-        checkIns?.length ?? (entries.length > 0 ? entries.length + 24 : 0),
-      totalEntries: entries?.length ?? 0,
-    };
-  }, [profile, checkIns, entries]);
+  const stats = useMemo(
+    () => ({
+      dayStreak: profile?.currentStreakDays ?? 0,
+      totalCheckIns: checkIns.length,
+      totalEntries: entries.length,
+    }),
+    [profile, checkIns, entries],
+  );
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -54,7 +49,6 @@ export default function DashboardClient() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         {/* Left / Main Section (2 Cols) */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Greeting Banner inside Left Column */}
           <GreetingBanner
             name={profile?.fullName ?? "User"}
             isLoading={isLoadingProfile}

@@ -1,35 +1,45 @@
-export interface ServerNotificationSettings {
-  daily_mood_reminder: boolean;
-  journal_reminder: boolean;
-  streak_alerts: boolean;
-  reminder_time: string;
+import type { Gender, OnboardingGoal } from "@/types/api";
+import type { OnboardingStepSlug } from "@/lib/onboarding/step-order";
+
+// ---- Backend shape: GET /api/v1/profile ----
+export interface ProfilePreferences {
+  theme?: string;
+  dailyMoodReminder?: boolean;
+  journalReminder?: boolean;
+  streakAlerts?: boolean;
+  reminderTime?: string;
+  /** Old single flag. Remove once Swagger confirms it's gone. */
+  notificationsEnabled?: boolean;
 }
 
-export interface ServerPrivacySettings {
-  app_lock: boolean;
+export interface Profile {
+  bio?: string | null;
+  avatarUrl?: string | null;
+  streakCount?: number;
+  lastCheckInAt?: string | null;
+  wellnessScore?: number;
+  age?: number;
+  gender?: Gender;
+  goals?: OnboardingGoal[];
+  reminderEnabled?: boolean;
+  reminderTime?: string;
+  onboardingStep?: OnboardingStepSlug;
+  onboardingCompleted?: boolean;
+  preferences?: ProfilePreferences;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-export interface ServerMoodBreakdownItem {
-  mood_label: string;
-  count: number;
-  color_hex: string;
-}
-
-export interface ServerUserProfileResponse {
+export interface ProfileResponse {
   id: string;
-  full_name: string;
   email: string;
-  avatar_url?: string | null;
-  member_since?: string;
-  wellness_score: number;
-  total_check_ins: number;
-  current_streak_days: number;
-  total_journal_entries: number;
-  mood_breakdown: ServerMoodBreakdownItem[];
-  notifications: ServerNotificationSettings;
-  privacy: ServerPrivacySettings;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  profile?: Profile | null;
 }
 
+// ---- View model used by the profile components ----
 export interface NotificationSettings {
   dailyMoodReminder: boolean;
   journalReminder: boolean;
@@ -38,7 +48,7 @@ export interface NotificationSettings {
 }
 
 export interface PrivacySettings {
-  appLock: boolean;
+  appLock: boolean; // design-only, never sent to the backend
 }
 
 export interface MoodBreakdownItem {
@@ -53,19 +63,18 @@ export interface UserProfile {
   email: string;
   avatarUrl?: string | null;
   memberSince?: string;
-  streak?: number;
   wellnessScore: number;
   totalCheckIns: number;
   currentStreakDays: number;
   totalJournalEntries: number;
+  positiveDaysThisMonth: number;
   moodBreakdown: MoodBreakdownItem[];
   notifications: NotificationSettings;
   privacy: PrivacySettings;
 }
 
-// Payload type for updating profile settings
 export interface UpdateProfileSettingsPayload {
-  notifications?: Partial<ServerNotificationSettings>;
-  privacy?: Partial<ServerPrivacySettings>;
-  full_name?: string;
+  fullName?: string;
+  notifications?: Partial<NotificationSettings>;
+  // No privacy here: app lock stays local component state.
 }

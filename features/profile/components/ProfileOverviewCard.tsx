@@ -59,7 +59,8 @@ export default function ProfileOverviewCard({ profile }: Props) {
           />
         </div>
         <p className="mt-3 text-[11px] leading-relaxed text-indigo-100/90">
-          22 positive days this month. Keep building on this momentum.
+          {profile.positiveDaysThisMonth} positive days this month. Keep
+          building on this momentum.
         </p>
       </div>
 

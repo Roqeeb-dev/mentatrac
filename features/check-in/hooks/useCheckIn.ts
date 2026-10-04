@@ -12,6 +12,7 @@ import {
 import { checkInService } from "../services/checkIn.service";
 import { useQueryClient } from "@tanstack/react-query";
 import { CHECK_INS_QUERY_KEY } from "./useCheckInHistory";
+import { profileKeys } from "@/features/profile/hooks/useUserProfile";
 
 const initialPayload: CheckInPayload = {
   mood: 3, // Default to 'Okay'
@@ -78,6 +79,7 @@ export function useCheckInFlow(onSuccess?: (record: CheckInRecord) => void) {
     try {
       const record = await checkInService.submitCheckIn(payload);
       queryClient.invalidateQueries({ queryKey: CHECK_INS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: profileKeys.all });
       setSavedRecord(record);
       setStep(5);
       onSuccess?.(record);

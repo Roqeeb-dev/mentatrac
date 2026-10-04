@@ -8,7 +8,7 @@ import SignOutModal from "./SignOutModal";
 
 interface Props {
   profile: UserProfile;
-  onToggleNotification?: (key: string, value: boolean) => void;
+  onToggleNotification?: (key: string, value: boolean) => Promise<void> | void;
   onTogglePrivacy?: (key: string, value: boolean) => void;
   onChangePassword?: (data: {
     currentPassword: string;
@@ -72,18 +72,21 @@ export default function ProfileSettingsSection({
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);
   const [isSignOutLoading, setIsSignOutLoading] = useState(false);
 
-  // Keep state in sync if the profile prop changes upstream
   useEffect(() => {
     setNotifications(profile.notifications);
-    setPrivacy(profile.privacy);
-  }, [profile]);
+  }, [profile.notifications]);
 
-  const handleNotificationToggle = (
+  const handleNotificationToggle = async (
     key: keyof typeof notifications,
     value: boolean,
   ) => {
+    const previous = notifications;
     setNotifications((prev) => ({ ...prev, [key]: value }));
-    onToggleNotification?.(key as string, value);
+    try {
+      await onToggleNotification?.(key as string, value);
+    } catch {
+      setNotifications(previous); // save failed, flip the switch back
+    }
   };
 
   const handlePrivacyToggle = (key: keyof typeof privacy, value: boolean) => {
