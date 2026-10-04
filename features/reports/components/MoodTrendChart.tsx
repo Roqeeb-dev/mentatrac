@@ -8,8 +8,9 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { ArrowDown, ArrowUp, TrendingUp } from "lucide-react";
 import { MoodTrendPoint } from "../types/reports";
+import { EmptyState } from "./EmptyState";
 
 interface MoodTrendChartProps {
   data: MoodTrendPoint[];
@@ -87,42 +88,51 @@ export function MoodTrendChart({ data }: MoodTrendChartProps) {
 
       {/* Recharts Container */}
       <div className="h-48 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={data}
-            margin={{ top: 12, right: 12, left: 12, bottom: 0 }}
-          >
-            {/* Multi-color line gradient */}
-            <defs>
-              <linearGradient id="moodGradient" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#818CF8" />
-                <stop offset="50%" stopColor="#C084FC" />
-                <stop offset="100%" stopColor="#34D399" />
-              </linearGradient>
-            </defs>
+        {data.length === 0 ? (
+          <EmptyState
+            className="h-full"
+            icon={TrendingUp}
+            title="No mood data yet"
+            description="Log a check-in and your trend will appear here."
+          />
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={data}
+              margin={{ top: 12, right: 12, left: 12, bottom: 0 }}
+            >
+              {/* Multi-color line gradient */}
+              <defs>
+                <linearGradient id="moodGradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#818CF8" />
+                  <stop offset="50%" stopColor="#C084FC" />
+                  <stop offset="100%" stopColor="#34D399" />
+                </linearGradient>
+              </defs>
 
-            <XAxis
-              dataKey="date"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "#94A3B8", fontSize: 11, fontWeight: 500 }}
-              dy={10}
-              interval="preserveStartEnd"
-            />
-            <YAxis domain={[1, 5]} hide />
-            <Tooltip content={<CustomTooltip />} />
+              <XAxis
+                dataKey="date"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "#94A3B8", fontSize: 11, fontWeight: 500 }}
+                dy={10}
+                interval="preserveStartEnd"
+              />
+              <YAxis domain={[1, 5]} hide />
+              <Tooltip content={<CustomTooltip />} />
 
-            <Line
-              type="monotone"
-              dataKey="score"
-              stroke="url(#moodGradient)"
-              strokeWidth={3}
-              dot={<CustomDot />}
-              activeDot={{ r: 6, strokeWidth: 2, stroke: "#FFFFFF" }}
-              isAnimationActive={true}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+              <Line
+                type="monotone"
+                dataKey="score"
+                stroke="url(#moodGradient)"
+                strokeWidth={3}
+                dot={<CustomDot />}
+                activeDot={{ r: 6, strokeWidth: 2, stroke: "#FFFFFF" }}
+                isAnimationActive={true}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   );

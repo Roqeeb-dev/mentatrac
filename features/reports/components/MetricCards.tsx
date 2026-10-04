@@ -5,6 +5,10 @@ interface MetricCardsProps {
 }
 
 export function MetricCards({ metrics }: MetricCardsProps) {
+  const hasData = metrics.checkIns.count > 0;
+  const change = metrics.positiveStreak.change;
+  const showChange = hasData && change !== "0" && change !== "+0";
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {/* Avg Mood */}
@@ -13,10 +17,18 @@ export function MetricCards({ metrics }: MetricCardsProps) {
           Avg Mood
         </span>
         <div className="mt-2 flex items-center gap-2">
-          <span className="text-2xl">{metrics.avgMood.emoji}</span>
-          <span className="text-xl font-bold text-slate-800">
-            {metrics.avgMood.label}
-          </span>
+          {hasData ? (
+            <>
+              <span className="text-2xl">{metrics.avgMood.emoji}</span>
+              <span className="text-xl font-bold text-slate-800">
+                {metrics.avgMood.label}
+              </span>
+            </>
+          ) : (
+            <span className="text-sm font-medium text-slate-400">
+              Check in to see your average
+            </span>
+          )}
         </div>
       </div>
 
@@ -26,12 +38,24 @@ export function MetricCards({ metrics }: MetricCardsProps) {
           Positive Streak
         </span>
         <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-3xl font-extrabold text-emerald-500">
+          <span
+            className={`text-3xl font-extrabold ${
+              metrics.positiveStreak.days > 0
+                ? "text-emerald-500"
+                : "text-slate-300"
+            }`}
+          >
             {metrics.positiveStreak.days}
           </span>
-          <span className="text-xs font-medium text-emerald-600">
-            {metrics.positiveStreak.change}
-          </span>
+          {showChange && (
+            <span
+              className={`text-xs font-medium ${
+                change.startsWith("-") ? "text-rose-500" : "text-emerald-600"
+              }`}
+            >
+              {change}
+            </span>
+          )}
         </div>
       </div>
 

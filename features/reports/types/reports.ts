@@ -25,7 +25,7 @@ export interface MoodTrendPoint {
 }
 
 export interface MoodDistributionItem {
-  label: "Radiant" | "Good" | "Okay" | "Tough";
+  label: "Radiant" | "Good" | "Okay" | "Tough" | "Hard";
   percentage: number;
   color: string;
 }

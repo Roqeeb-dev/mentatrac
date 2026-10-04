@@ -33,9 +33,7 @@ export default function ReportsClient() {
         <TopTriggersCard triggers={data.topTriggers} />
       </div>
 
-      {data.moodCalendar.length > 0 && (
-        <MoodCalendar calendarDays={data.moodCalendar} />
-      )}
+      <MoodCalendar calendarDays={data.moodCalendar} />
     </div>
   );
 }
