@@ -6,6 +6,7 @@ import { Flame, Check, BookOpen } from "lucide-react";
 import { useJournal } from "@/features/journal/hooks/useJournal";
 import { useUserProfile } from "@/features/profile/hooks/useUserProfile";
 import { useCheckIns } from "@/features/check-in/hooks/useCheckInHistory";
+import { useDashboardMoods } from "@/features/dashboard/hooks/useDashboardMoods";
 
 import { GreetingBanner } from "@/features/dashboard/components/GreetingBanner";
 import { TodayMoodCard } from "@/features/dashboard/components/TodayMoodCard";
@@ -17,11 +18,7 @@ import { RecentJournalWidget } from "@/features/dashboard/components/RecentJourn
 import { CheckInModal } from "@/features/check-in/components/CheckInModal";
 import { StatCard } from "@/features/dashboard/components/StatCard";
 
-import {
-  MOCK_WEEKLY_MOODS,
-  MOCK_MOOD_TREND,
-  MOCK_QUICK_EXERCISE,
-} from "@/features/dashboard/data/mockDashboard";
+import { MOCK_QUICK_EXERCISE } from "@/features/dashboard/data/mockDashboard";
 
 export default function DashboardClient() {
   const {
@@ -31,8 +28,10 @@ export default function DashboardClient() {
   } = useJournal();
   const { profile, isLoading: isLoadingProfile } = useUserProfile();
   const { data: checkIns = [], isLoading: isLoadingCheckIns } = useCheckIns();
+  const { todayMood, week, trend } = useDashboardMoods();
 
   const [isCheckInOpen, setIsCheckInOpen] = useState(false);
+  const openCheckIn = () => setIsCheckInOpen(true);
 
   const stats = useMemo(
     () => ({
@@ -45,28 +44,44 @@ export default function DashboardClient() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      {/* 2-Column Responsive Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         {/* Left / Main Section (2 Cols) */}
         <div className="lg:col-span-2 space-y-6">
           <GreetingBanner
-            name={profile?.fullName ?? "User"}
+            name={profile?.fullName ?? "there"}
             isLoading={isLoadingProfile}
           />
 
-          {/* Mood Overview Row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <TodayMoodCard
-              emoji="😊"
-              label="Good"
-              subtitle="Doing well"
-              onLogAgain={() => setIsCheckInOpen(true)}
-            />
-            <WeeklyMoodStrip days={MOCK_WEEKLY_MOODS} />
+            {todayMood ? (
+              <TodayMoodCard
+                emoji={todayMood.emoji}
+                label={todayMood.label}
+                subtitle={todayMood.subtitle}
+                onLogAgain={openCheckIn}
+              />
+            ) : (
+              <div className="flex flex-col justify-center gap-3 rounded-3xl border border-slate-100 bg-white p-6">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  Today&apos;s mood
+                </p>
+                <p className="text-sm text-slate-500">
+                  You haven&apos;t checked in yet today.
+                </p>
+                <button
+                  type="button"
+                  onClick={openCheckIn}
+                  className="w-fit rounded-full bg-[#5B4DFB] px-4 py-2 text-xs font-semibold text-white"
+                >
+                  Check in now
+                </button>
+              </div>
+            )}
+            <WeeklyMoodStrip days={week} />
           </div>
 
-          <MoodBannerCTA onCheckIn={() => setIsCheckInOpen(true)} />
-          <MoodTrendChart data={MOCK_MOOD_TREND} />
+          <MoodBannerCTA onCheckIn={openCheckIn} />
+          <MoodTrendChart data={trend} />
         </div>
 
         {/* Right Sidebar Section (1 Col) */}

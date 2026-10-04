@@ -4,7 +4,7 @@ import { AuthSidebar } from "@/features/auth/components/AuthSidebar";
 export const metadata: Metadata = {
   title: {
     template: "%s",
-    default: "Authentication | Mentatrac",
+    default: "Authentication",
   },
   description: "Sign in or manage your Mentatrac account.",
 };

@@ -9,14 +9,12 @@ interface WeeklyMoodStripProps {
 
 export function WeeklyMoodStrip({ days }: WeeklyMoodStripProps) {
   const getBadgeStyle = (item: DayMoodSummary) => {
-    if (item.emoji === "✨" || item.moodScore === 5) {
-      return "bg-[#FFF8EE] border-[#FFEAD0]";
+    if (item.moodScore === null) {
+      return "bg-slate-50 border-slate-100 border-dashed";
     }
-    if (item.emoji === "😐" || item.emoji === "😔" || item.moodScore <= 3) {
-      return "bg-[#EDF3FA] border-[#DCE7F5]";
-    }
-    // Default good mood (😊)
-    return "bg-[#EBF6F0] border-[#D5ECDF]";
+    if (item.moodScore === 5) return "bg-[#FFF8EE] border-[#FFEAD0]";
+    if (item.moodScore <= 3) return "bg-[#EDF3FA] border-[#DCE7F5]";
+    return "bg-[#EBF6F0] border-[#D5ECDF]"; // 4 = Good
   };
 
   return (
@@ -45,7 +43,7 @@ export function WeeklyMoodStrip({ days }: WeeklyMoodStripProps) {
                 item,
               )}`}
             >
-              {item.emoji}
+              {item.emoji ?? <span className="text-xs text-slate-300">–</span>}
             </div>
           </div>
         ))}

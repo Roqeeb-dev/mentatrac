@@ -22,8 +22,8 @@ export interface TodayMoodData {
 
 export interface DayMoodSummary {
   day: string;
-  emoji: string;
-  moodScore: MoodScore;
+  emoji: string | null;
+  moodScore: MoodScore | null;
 }
 
 export interface MoodTrendPoint {

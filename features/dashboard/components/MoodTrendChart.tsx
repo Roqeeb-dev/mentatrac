@@ -70,32 +70,38 @@ export function MoodTrendChart({ data }: MoodTrendChartProps) {
 
       {/* Recharts Container */}
       <div className="h-40 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={data}
-            margin={{ top: 12, right: 12, left: 12, bottom: 0 }}
-          >
-            <XAxis
-              dataKey="date"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "#94A3B8", fontSize: 10, fontWeight: 500 }}
-              dy={10}
-              interval="preserveStartEnd"
-            />
-            <YAxis domain={[1, 5]} hide />
-            <Tooltip content={<CustomTooltip />} />
-            <Line
-              type="monotone"
-              dataKey="score"
-              stroke="#8B5CF6"
-              strokeWidth={2.5}
-              dot={<CustomDot />}
-              activeDot={{ r: 6, strokeWidth: 0 }}
-              isAnimationActive={true}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        {data.length === 0 ? (
+          <div className="flex h-full items-center justify-center text-xs text-slate-400">
+            No check-ins in the last 14 days yet.
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={data}
+              margin={{ top: 12, right: 12, left: 12, bottom: 0 }}
+            >
+              <XAxis
+                dataKey="date"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "#94A3B8", fontSize: 10, fontWeight: 500 }}
+                dy={10}
+                interval="preserveStartEnd"
+              />
+              <YAxis domain={[1, 5]} hide />
+              <Tooltip content={<CustomTooltip />} />
+              <Line
+                type="monotone"
+                dataKey="score"
+                stroke="#8B5CF6"
+                strokeWidth={2.5}
+                dot={<CustomDot />}
+                activeDot={{ r: 6, strokeWidth: 0 }}
+                isAnimationActive={true}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   );
