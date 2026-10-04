@@ -79,7 +79,7 @@ export const profileService = {
         colorHex: MOOD_COLORS[score],
       })),
 
-      totalJournalEntries: 0, // wire up when the journal service is migrated
+      totalJournalEntries: 0,
 
       notifications: {
         dailyMoodReminder:
