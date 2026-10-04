@@ -6,7 +6,8 @@ interface Props {
 }
 
 export default function ProfileOverviewCard({ profile }: Props) {
-  const getInitial = (name: string) => name.charAt(0).toUpperCase();
+  const getInitial = (name?: string | null) =>
+    (name?.trim().charAt(0) || "U").toUpperCase();
 
   return (
     <div className="flex flex-col gap-6 rounded-[24px] border border-slate-100 bg-[#F4FAF8]/60 p-6 shadow-sm backdrop-blur-sm">
