@@ -7,7 +7,7 @@ import type { TodayMoodData } from "@/features/dashboard/types/dashboard";
 
 export const CHECK_INS_QUERY_KEY = ["check-ins"] as const;
 
-const MOOD_META: Record<MoodScore, { emoji: string; label: string }> = {
+export const MOOD_META: Record<MoodScore, { emoji: string; label: string }> = {
   5: { emoji: "✨", label: "Radiant" },
   4: { emoji: "😊", label: "Good" },
   3: { emoji: "😐", label: "Okay" },
@@ -22,7 +22,7 @@ function toDayKey(d: Date) {
   return `${y}-${m}-${day}`;
 }
 
-function calcStreak(records: CheckInRecord[]) {
+export function calcStreak(records: CheckInRecord[]) {
   const days = new Set(records.map((r) => r.date.slice(0, 10)));
   const cursor = new Date();
 

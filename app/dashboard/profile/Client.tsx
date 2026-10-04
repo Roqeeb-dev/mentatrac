@@ -37,7 +37,7 @@ const mockProfileData: UserProfile = {
 };
 
 export default function ProfilePage() {
-  const USE_MOCK_DATA = true;
+  const USE_MOCK_DATA = false;
 
   const hookData = useUserProfile();
 
