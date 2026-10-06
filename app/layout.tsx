@@ -28,11 +28,24 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://mentalhealth1.duckdns.org"),
   title: {
     default: "Mentatrac",
     template: "%s | Mentatrac",
   },
   description: "Track your mood and mental wellness, one check-in at a time.",
+  openGraph: {
+    title: "Mentatrac",
+    description: "Track your mood and mental wellness, one check-in at a time.",
+    siteName: "Mentatrac",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mentatrac",
+    description: "Track your mood and mental wellness, one check-in at a time.",
+  },
 };
 
 export default function RootLayout({
