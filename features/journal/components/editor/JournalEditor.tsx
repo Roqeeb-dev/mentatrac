@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { JournalEntry, CreateJournalInput } from "../../types/journal";
 
 interface JournalEditorProps {
   entry: JournalEntry | null;
   isCreating: boolean;
+  isSaving?: boolean;
   onSave: (input: CreateJournalInput) => void;
   onUpdate: (id: string, updates: Partial<CreateJournalInput>) => void;
   onCancel: () => void;
@@ -16,6 +17,7 @@ interface JournalEditorProps {
 export function JournalEditor({
   entry,
   isCreating,
+  isSaving = false,
   onSave,
   onUpdate,
   onCancel,
@@ -40,6 +42,8 @@ export function JournalEditor({
   }, [content]);
 
   const handleSave = () => {
+    if (isSaving) return; // ignore double clicks while a save is running
+
     const finalTitle = title.trim() || "Untitled Entry";
 
     if (entry) {
@@ -78,23 +82,41 @@ export function JournalEditor({
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
-          <span className="hidden sm:flex items-center gap-1.5 text-xs text-emerald-600 font-medium">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            Autosaved
+          <span
+            className={`hidden sm:flex items-center gap-1.5 text-xs font-medium ${
+              isSaving ? "text-slate-400" : "text-emerald-600"
+            }`}
+          >
+            <span
+              className={`w-2 h-2 rounded-full animate-pulse ${
+                isSaving ? "bg-slate-300" : "bg-emerald-500"
+              }`}
+            />
+            {isSaving ? "Saving..." : "Autosaved"}
           </span>
           <button
             type="button"
             onClick={onCancel}
-            className="px-3 py-1.5 text-xs text-slate-400 hover:text-slate-600 font-medium transition-colors"
+            disabled={isSaving}
+            className="px-3 py-1.5 text-xs text-slate-400 hover:text-slate-600 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={handleSave}
-            className="px-4 py-1.5 bg-[#5B4DFB] text-white rounded-lg text-xs font-semibold hover:bg-[#4A3CE2] transition-colors shadow-xs"
+            disabled={isSaving}
+            aria-busy={isSaving}
+            className="inline-flex min-w-[104px] items-center justify-center gap-1.5 px-4 py-1.5 bg-[#5B4DFB] text-white rounded-lg text-xs font-semibold hover:bg-[#4A3CE2] transition-colors shadow-xs disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-[#5B4DFB]"
           >
-            Save entry
+            {isSaving ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              "Save entry"
+            )}
           </button>
         </div>
       </div>

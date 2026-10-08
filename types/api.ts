@@ -16,6 +16,7 @@ export type User = {
   id: string;
   email: string;
   firstName?: string;
+  name?: string | null;
   age?: number;
   gender?: Gender;
   goals?: OnboardingGoal[];
@@ -58,4 +59,22 @@ export type UpdateOnboardingPayload = Partial<
 > & {
   onboardingStep?: OnboardingStepSlug;
   onboardingCompleted?: boolean;
+};
+
+export type ChangePasswordPayload = {
+  currentPassword: string;
+  newPassword: string;
+};
+
+export type UpdateMePayload = {
+  name: string;
+  email: string;
+};
+
+export type UpdateMeResponse = {
+  id: string;
+  email: string;
+  name: string | null;
+  createdAt: string;
+  updatedAt: string;
 };

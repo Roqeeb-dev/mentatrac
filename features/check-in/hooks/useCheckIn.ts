@@ -13,9 +13,10 @@ import { checkInService } from "../services/checkIn.service";
 import { useQueryClient } from "@tanstack/react-query";
 import { CHECK_INS_QUERY_KEY } from "./useCheckInHistory";
 import { profileKeys } from "@/features/profile/hooks/useUserProfile";
+import { toast } from "@/stores/toast-store";
 
 const initialPayload: CheckInPayload = {
-  mood: 3, // Default to 'Okay'
+  mood: 3,
   emotions: [],
   influencers: [],
   note: "",
@@ -82,13 +83,18 @@ export function useCheckInFlow(onSuccess?: (record: CheckInRecord) => void) {
       queryClient.invalidateQueries({ queryKey: profileKeys.all });
       setSavedRecord(record);
       setStep(5);
+      toast.success("Check-in saved");
       onSuccess?.(record);
     } catch (err: any) {
-      setError(err?.message || "Failed to save check-in. Please try again.");
+      const message =
+        err?.message || "Failed to save check-in. Please try again.";
+      setError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
   };
+
   // Reset state for new entry
   const resetForm = () => {
     setStep(1);

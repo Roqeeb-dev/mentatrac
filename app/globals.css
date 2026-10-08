@@ -279,4 +279,13 @@
     background-color: var(--color-info-light);
     color: var(--color-info);
   }
+
+  @keyframes toast-shrink {
+    from {
+      width: 100%;
+    }
+    to {
+      width: 0%;
+    }
+  }
 }

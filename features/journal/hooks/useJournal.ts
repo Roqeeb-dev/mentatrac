@@ -61,6 +61,7 @@ export function useJournal() {
     selectedId,
     selectedEntry,
     isCreating,
+    isSaving: createEntry.isPending || updateEntry.isPending,
     searchQuery,
     setSearchQuery,
     activeFilter,

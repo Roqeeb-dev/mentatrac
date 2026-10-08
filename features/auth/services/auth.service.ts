@@ -5,6 +5,9 @@ import type {
   LoginPayload,
   RefreshResponse,
   SignUpPayload,
+  ChangePasswordPayload,
+  UpdateMePayload,
+  UpdateMeResponse,
   User,
 } from "@/types/api";
 
@@ -29,6 +32,12 @@ export const authService = {
     }
   },
 
+  async deleteAccount() {
+    const data = await apiClient.delete<{ message: string }>("/users/me");
+    useTokenStore.getState().clearTokens();
+    return data;
+  },
+
   async refresh() {
     const { refreshToken, setTokens, clearTokens } = useTokenStore.getState();
     if (!refreshToken) return null;
@@ -46,4 +55,10 @@ export const authService = {
   },
 
   getCurrentUser: () => apiClient.get<User>("/users/me"),
+
+  updateMe: (payload: UpdateMePayload) =>
+    apiClient.patch<UpdateMeResponse>("/users/me", payload),
+
+  changePassword: (payload: ChangePasswordPayload) =>
+    apiClient.patch<{ message: string }>("/users/me/password", payload),
 };

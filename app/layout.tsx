@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Serif_Display, Outfit, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/providers";
+import ToastContainer from "@/components/ui/ToastContainer";
 
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -59,7 +60,10 @@ export default function RootLayout({
       className={`${dmSerifDisplay.variable} ${outfit.variable} ${jetbrainsMono.variable}`}
     >
       <body className="antialiased">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <ToastContainer />
+        </Providers>
       </body>
     </html>
   );

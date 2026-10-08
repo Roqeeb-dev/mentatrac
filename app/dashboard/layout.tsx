@@ -37,7 +37,7 @@ export default function DashboardLayout({
   const profile: UserProfileData | null = useMemo(() => {
     if (!user) return null;
     return {
-      name: user.firstName ?? user.email.split("@")[0],
+      name: user.name?.trim() || user.email.split("@")[0],
       email: user.email,
     };
   }, [user]);

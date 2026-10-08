@@ -6,6 +6,10 @@ import {
   JournalEntry,
   UpdateJournalInput,
 } from "../types/journal";
+import { toast } from "@/stores/toast-store";
+
+const messageOf = (err: unknown, fallback: string) =>
+  err instanceof Error && err.message ? err.message : fallback;
 
 export function useJournalMutations() {
   const queryClient = useQueryClient();
@@ -19,9 +23,11 @@ export function useJournalMutations() {
         created,
         ...old,
       ]);
-
       invalidate();
+      toast.success("Journal entry saved");
     },
+    onError: (err) =>
+      toast.error(messageOf(err, "Couldn't save your journal entry.")),
   });
 
   const updateEntry = useMutation({
@@ -37,7 +43,10 @@ export function useJournalMutations() {
         old.map((e) => (e.id === updated.id ? updated : e)),
       );
       invalidate();
+      toast.success("Journal entry updated");
     },
+    onError: (err) =>
+      toast.error(messageOf(err, "Couldn't update your journal entry.")),
   });
 
   const deleteEntry = useMutation({
@@ -47,7 +56,10 @@ export function useJournalMutations() {
         old.filter((e) => e.id !== id),
       );
       invalidate();
+      toast.success("Journal entry deleted");
     },
+    onError: (err) =>
+      toast.error(messageOf(err, "Couldn't delete your journal entry.")),
   });
 
   return { createEntry, updateEntry, deleteEntry };
