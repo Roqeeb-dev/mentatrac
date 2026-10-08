@@ -17,31 +17,39 @@ export function JournalEntryCard({
 }: JournalEntryCardProps) {
   return (
     <button
+      type="button"
       onClick={() => onSelect(entry.id)}
-      className={`w-full text-left p-3.5 rounded-xl transition-all border ${
+      aria-pressed={isSelected}
+      className={`group relative w-full overflow-hidden rounded-2xl border p-4 text-left transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5B4DFB]/40 ${
         isSelected
-          ? "bg-white border-slate-200 shadow-xs ring-1 ring-slate-200"
-          : "border-transparent hover:bg-white/60"
+          ? "border-[#5B4DFB]/30 bg-white shadow-md shadow-indigo-100 ring-1 ring-[#5B4DFB]/20"
+          : "border-slate-200/80 bg-white shadow-sm hover:-translate-y-px hover:border-slate-300 hover:shadow-md"
       }`}
     >
-      <div className="flex items-center justify-between gap-2 mb-1">
-        <h3 className="text-xs font-bold text-slate-900 truncate">
-          {entry.title}
-        </h3>
-      </div>
+      {/* Accent bar on the selected card */}
+      <span
+        aria-hidden
+        className={`absolute inset-y-3 left-0 w-1 rounded-r-full bg-[#5B4DFB] transition-opacity duration-200 ${
+          isSelected ? "opacity-100" : "opacity-0"
+        }`}
+      />
 
-      <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed mb-2.5">
+      <h3 className="mb-1 truncate text-sm font-bold text-slate-900">
+        {entry.title}
+      </h3>
+
+      <p className="mb-3 line-clamp-2 text-xs leading-relaxed text-slate-500">
         {entry.content}
       </p>
 
-      <div className="flex items-center justify-between text-[10px]">
-        <span className="text-slate-400 font-medium">
+      <div className="flex items-center justify-between border-t border-slate-100 pt-2.5 text-[11px]">
+        <span className="font-medium text-slate-400">
           {formatEntryDate(entry.createdAt)}
         </span>
 
         {entry.moodTag && (
           <span
-            className={`px-2 py-0.5 rounded-full border text-[9px] font-semibold ${MOOD_TAG_STYLES[entry.moodTag]}`}
+            className={`rounded-full border px-2.5 py-0.5 text-[10px] font-semibold ${MOOD_TAG_STYLES[entry.moodTag]}`}
           >
             {entry.moodTag}
           </span>
