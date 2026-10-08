@@ -30,6 +30,12 @@ export const authService = {
     }
   },
 
+  async deleteAccount() {
+    const data = await apiClient.delete<{ message: string }>("/users/me");
+    useTokenStore.getState().clearTokens();
+    return data;
+  },
+
   async refresh() {
     const { refreshToken, setTokens, clearTokens } = useTokenStore.getState();
     if (!refreshToken) return null;

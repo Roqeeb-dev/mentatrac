@@ -95,3 +95,17 @@ export function useChangePassword() {
     },
   });
 }
+
+export function useDeleteAccount() {
+  const queryClient = useQueryClient();
+  return useMutation<{ message: string }, Error, void>({
+    mutationFn: () => authService.deleteAccount(),
+    onSuccess: () => {
+      queryClient.clear();
+      toast.success("Your account has been deleted.");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Couldn't delete your account. Try again.");
+    },
+  });
+}

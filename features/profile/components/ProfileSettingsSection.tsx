@@ -5,6 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { UserProfile } from "../types/profile";
 import ChangePasswordModal from "./ChangePasswordModal";
 import SignOutModal from "./SignOutModal";
+import DeleteAccountModal from "./DeleteAccountModal";
 
 interface Props {
   profile: UserProfile;
@@ -15,6 +16,7 @@ interface Props {
     newPassword: string;
   }) => Promise<void> | void;
   onSignOut?: () => Promise<void> | void;
+  onDeleteAccount?: () => Promise<void> | void;
 }
 
 // Reusable toggle switch component
@@ -59,6 +61,7 @@ export default function ProfileSettingsSection({
   onTogglePrivacy,
   onChangePassword,
   onSignOut,
+  onDeleteAccount,
 }: Props) {
   // Toggle states
   const [notifications, setNotifications] = useState(profile.notifications);
@@ -67,10 +70,12 @@ export default function ProfileSettingsSection({
   // Modal open states
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // Modal loading states
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);
   const [isSignOutLoading, setIsSignOutLoading] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
   useEffect(() => {
     setNotifications(profile.notifications);
@@ -103,6 +108,7 @@ export default function ProfileSettingsSection({
       await onChangePassword?.(data);
       setIsPasswordModalOpen(false);
     } catch {
+      // the hook shows the error toast; modal stays open to retry
     } finally {
       setIsPasswordLoading(false);
     }
@@ -117,6 +123,18 @@ export default function ProfileSettingsSection({
       // modal stays open so the user can retry
     } finally {
       setIsSignOutLoading(false);
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    setIsDeleteLoading(true);
+    try {
+      await onDeleteAccount?.();
+      setIsDeleteModalOpen(false);
+    } catch {
+      // the hook shows the error toast; modal stays open to retry
+    } finally {
+      setIsDeleteLoading(false);
     }
   };
 
@@ -168,7 +186,7 @@ export default function ProfileSettingsSection({
                 Streak alerts
               </p>
               <p className="text-xs text-slate-400 mt-0.5">
-                Don't break the chain
+                Don&apos;t break the chain
               </p>
             </div>
             <SettingSwitch
@@ -279,7 +297,11 @@ export default function ProfileSettingsSection({
           </button>
 
           <div>
-            <button className="block w-full text-left text-sm font-semibold text-rose-500 transition-colors hover:text-rose-600">
+            <button
+              type="button"
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="block w-full text-left text-sm font-semibold text-rose-500 transition-colors hover:text-rose-600"
+            >
               Delete account
             </button>
             <p className="mt-0.5 text-xs text-slate-400">
@@ -302,6 +324,13 @@ export default function ProfileSettingsSection({
         onClose={() => setIsSignOutModalOpen(false)}
         onConfirm={handleSignOutConfirm}
         loading={isSignOutLoading}
+      />
+
+      <DeleteAccountModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        loading={isDeleteLoading}
       />
     </div>
   );
