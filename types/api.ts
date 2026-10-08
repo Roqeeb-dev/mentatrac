@@ -59,3 +59,8 @@ export type UpdateOnboardingPayload = Partial<
   onboardingStep?: OnboardingStepSlug;
   onboardingCompleted?: boolean;
 };
+
+export type ChangePasswordPayload = {
+  currentPassword: string;
+  newPassword: string;
+};

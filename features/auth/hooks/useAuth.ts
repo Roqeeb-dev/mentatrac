@@ -3,6 +3,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authService } from "@/features/auth/services/auth.service";
 import { toast } from "@/stores/toast-store";
+import { ApiError } from "@/lib/api/errors";
+import type { ChangePasswordPayload } from "@/types/api";
 import type {
   LoginPayload,
   SignUpPayload,
@@ -68,6 +70,28 @@ export function useLogout() {
     onSuccess: () => {
       queryClient.clear();
       toast.success("You have been logged out.");
+    },
+  });
+}
+
+export function useChangePassword() {
+  return useMutation<{ message: string }, Error, ChangePasswordPayload>({
+    mutationFn: (payload) => authService.changePassword(payload),
+    onSuccess: () => {
+      toast.success("Password changed successfully.");
+    },
+    onError: (error) => {
+      const status = error instanceof ApiError ? error.status : undefined;
+      if (status === 401) {
+        toast.error("Your current password is incorrect.");
+      } else if (status === 409) {
+        toast.error(
+          "Your new password must be different from the current one.",
+        );
+      } else {
+        // 400 (new password too short) and anything else: use the server's message
+        toast.error(error.message || "Couldn't change your password.");
+      }
     },
   });
 }

@@ -94,36 +94,27 @@ export default function ProfileSettingsSection({
     onTogglePrivacy?.(key as string, value);
   };
 
-  // Handle password submit (with mock latency if no handler provided)
   const handleChangePasswordSubmit = async (data: {
     currentPassword: string;
     newPassword: string;
   }) => {
     setIsPasswordLoading(true);
     try {
-      if (onChangePassword) {
-        await onChangePassword(data);
-      } else {
-        // Mock API call delay
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
+      await onChangePassword?.(data);
       setIsPasswordModalOpen(false);
+    } catch {
     } finally {
       setIsPasswordLoading(false);
     }
   };
 
-  // Handle sign out action (with mock latency if no handler provided)
   const handleSignOutConfirm = async () => {
     setIsSignOutLoading(true);
     try {
-      if (onSignOut) {
-        await onSignOut();
-      } else {
-        // Mock API call delay
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
+      await onSignOut?.();
       setIsSignOutModalOpen(false);
+    } catch {
+      // modal stays open so the user can retry
     } finally {
       setIsSignOutLoading(false);
     }

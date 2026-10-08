@@ -2,12 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import { useUserProfile } from "@/features/profile/hooks/useUserProfile";
-import { useLogout } from "@/features/auth/hooks/useAuth";
+import { useLogout, useChangePassword } from "@/features/auth/hooks/useAuth";
 import ProfileOverviewCard from "@/features/profile/components/ProfileOverviewCard";
 import ProfileSettingsSection from "@/features/profile/components/ProfileSettingsSection";
 import { ProfileSkeleton } from "@/features/profile/components/ProfileSkeleton";
 import { ProfileErrorState } from "@/features/profile/components/ProfileErrorState";
 import type { NotificationSettings } from "@/features/profile/types/profile";
+import { toast } from "@/stores/toast-store";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -22,8 +23,13 @@ export default function ProfilePage() {
   };
 
   const handleSignOut = async () => {
-    await logout.mutateAsync();
-    router.replace("/login");
+    try {
+      await logout.mutateAsync();
+      router.replace("/login");
+    } catch {
+      toast.error("Couldn't sign you out. Try again.");
+      throw new Error("sign-out failed"); // keeps the modal open
+    }
   };
 
   if (isLoading) return <ProfileSkeleton />;
@@ -36,6 +42,15 @@ export default function ProfilePage() {
       />
     );
   }
+
+  const changePassword = useChangePassword();
+
+  const handleChangePassword = async (data: {
+    currentPassword: string;
+    newPassword: string;
+  }) => {
+    await changePassword.mutateAsync(data);
+  };
 
   return (
     <div className="mx-auto max-w-7xl p-3 md:p-0">
@@ -51,6 +66,7 @@ export default function ProfilePage() {
             profile={profile}
             onToggleNotification={handleToggleNotification}
             onSignOut={handleSignOut}
+            onChangePassword={handleChangePassword}
           />
         </main>
       </div>

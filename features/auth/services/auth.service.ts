@@ -5,6 +5,7 @@ import type {
   LoginPayload,
   RefreshResponse,
   SignUpPayload,
+  ChangePasswordPayload,
   User,
 } from "@/types/api";
 
@@ -46,4 +47,7 @@ export const authService = {
   },
 
   getCurrentUser: () => apiClient.get<User>("/users/me"),
+
+  changePassword: (payload: ChangePasswordPayload) =>
+    apiClient.patch<{ message: string }>("/users/me/password", payload),
 };
