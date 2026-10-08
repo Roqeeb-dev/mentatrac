@@ -8,6 +8,10 @@ import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useOnboardingDraft } from "@/features/onboarding/hooks/useOnboardingDraft";
 import type { Gender } from "@/stores/useOnboardingStore";
+import {
+  useCurrentUser,
+  useUpdateProfile,
+} from "@/features/auth/hooks/useAuth";
 
 const GENDER_OPTIONS: { id: Gender; label: string }[] = [
   { id: "prefer_not_to_say", label: "Prefer not to say" },
@@ -19,6 +23,8 @@ export default function ProfilePage() {
   const router = useRouter();
   const { firstName, age, gender, setField, isHydrated } = useOnboardingDraft();
   const [error, setError] = useState("");
+  const { data: user } = useCurrentUser();
+  const { mutate: updateProfile, isPending } = useUpdateProfile();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,8 +32,15 @@ export default function ProfilePage() {
       setError("Please enter your first name");
       return;
     }
+    if (!user?.email) {
+      setError("We couldn't load your account. Refresh and try again.");
+      return;
+    }
 
-    router.push("/onboarding/goals");
+    updateProfile(
+      { name: firstName.trim(), email: user.email },
+      { onSuccess: () => router.push("/onboarding/goals") },
+    );
   };
 
   if (!isHydrated) {
@@ -114,7 +127,8 @@ export default function ProfilePage() {
             variant="primary"
             size="lg"
             fullWidth
-            disabled={!firstName.trim()}
+            loading={isPending}
+            disabled={!firstName.trim() || isPending}
             rightIcon={<ArrowRight className="h-4 w-4" />}
           >
             Continue

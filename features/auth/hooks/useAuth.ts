@@ -10,6 +10,8 @@ import type {
   SignUpPayload,
   User,
   AuthResponse,
+  UpdateMePayload,
+  UpdateMeResponse,
 } from "@/types/api";
 
 export const AUTH_QUERY_KEY = ["auth", "me"] as const;
@@ -106,6 +108,22 @@ export function useDeleteAccount() {
     },
     onError: (error) => {
       toast.error(error.message || "Couldn't delete your account. Try again.");
+    },
+  });
+}
+
+export function useUpdateProfile() {
+  const queryClient = useQueryClient();
+  return useMutation<UpdateMeResponse, Error, UpdateMePayload>({
+    mutationFn: (payload) => authService.updateMe(payload),
+    onSuccess: (updated) => {
+      queryClient.setQueryData<User | null>(AUTH_QUERY_KEY, (old) =>
+        old ? { ...old, ...updated } : old,
+      );
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+    },
+    onError: (error) => {
+      toast.error(error.message || "Couldn't save your name. Try again.");
     },
   });
 }
