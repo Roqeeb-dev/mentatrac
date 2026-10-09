@@ -5,27 +5,21 @@ import Link from "next/link";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { useForgotPassword } from "@/features/auth/hooks/useAuth";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const { mutate: requestReset, isPending: isLoading } = useForgotPassword();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || isLoading) return;
 
-    setIsLoading(true);
-
-    try {
-      // Call your password reset request API endpoint here
-      // await authService.requestPasswordReset({ email });
-      setIsSubmitted(true);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    requestReset(
+      { email: email.trim() },
+      { onSuccess: () => setIsSubmitted(true) },
+    );
   };
 
   return (
@@ -51,8 +45,9 @@ export default function ForgotPasswordPage() {
               Check your inbox
             </h3>
             <p className="text-body-sm text-text-secondary">
-              We have sent a reset link to{" "}
-              <span className="font-semibold text-text-primary">{email}</span>
+              If an account exists for{" "}
+              <span className="font-semibold text-text-primary">{email}</span>,
+              we&apos;ve sent a reset link.
             </p>
           </div>
           <Button

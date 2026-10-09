@@ -1,48 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { useResetPassword } from "@/features/auth/hooks/useAuth";
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const router = useRouter();
+  const token = useSearchParams().get("token");
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { mutate: resetPassword, isPending: isLoading } = useResetPassword();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+
+    if (!token) {
+      setErrorMessage(
+        "This reset link is missing its token. Request a new one.",
+      );
+      return;
+    }
 
     if (password !== confirmPassword) {
       setErrorMessage("Passwords do not match.");
       return;
     }
 
-    setIsLoading(true);
-
-    try {
-      // Call your reset password API endpoint here
-      // await authService.resetPassword({ password });
-      setIsSuccess(true);
-
-      // Redirect after brief delay
-      setTimeout(() => {
-        router.push("/login");
-      }, 2000);
-    } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : "Failed to reset password.",
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    resetPassword(
+      { token, newPassword: password },
+      {
+        onSuccess: () => {
+          setIsSuccess(true);
+          setTimeout(() => router.push("/login"), 2000);
+        },
+        onError: (error) => setErrorMessage(error.message),
+      },
+    );
   };
 
   return (
@@ -53,7 +54,7 @@ export default function ResetPasswordPage() {
           Reset Password
         </h1>
         <p className="text-body-sm text-text-secondary">
-          We&apos;ll email you a link to set a new password.
+          Choose a new password for your account
         </p>
       </div>
 
@@ -134,5 +135,13 @@ export default function ResetPasswordPage() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={null}>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }

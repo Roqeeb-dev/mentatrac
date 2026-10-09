@@ -12,11 +12,12 @@ import type {
   AuthResponse,
   UpdateMePayload,
   UpdateMeResponse,
+  ForgotPasswordPayload,
+  ResetPasswordPayload,
 } from "@/types/api";
 
 export const AUTH_QUERY_KEY = ["auth", "me"] as const;
 
-// The backend returns `name`; fall back to the email prefix if it's empty.
 function getDisplayName(user: User) {
   const name = (user as { name?: string | null }).name?.trim();
   return name || user.email.split("@")[0];
@@ -91,7 +92,6 @@ export function useChangePassword() {
           "Your new password must be different from the current one.",
         );
       } else {
-        // 400 (new password too short) and anything else: use the server's message
         toast.error(error.message || "Couldn't change your password.");
       }
     },
@@ -124,6 +124,34 @@ export function useUpdateProfile() {
     },
     onError: (error) => {
       toast.error(error.message || "Couldn't save your name. Try again.");
+    },
+  });
+}
+
+export function useForgotPassword() {
+  return useMutation<{ message: string }, Error, ForgotPasswordPayload>({
+    mutationFn: (payload) => authService.forgotPassword(payload),
+    onError: (error) => {
+      toast.error(error.message || "Couldn't send the reset link. Try again.");
+    },
+  });
+}
+
+export function useResetPassword() {
+  return useMutation<{ message: string }, Error, ResetPasswordPayload>({
+    mutationFn: (payload) => authService.resetPassword(payload),
+    onSuccess: () => {
+      toast.success("Password reset. You can log in now.");
+    },
+    onError: (error) => {
+      const status = error instanceof ApiError ? error.status : undefined;
+      if (status === 401) {
+        toast.error(
+          "This reset link is invalid or has expired. Request a new one.",
+        );
+      } else {
+        toast.error(error.message || "Couldn't reset your password.");
+      }
     },
   });
 }

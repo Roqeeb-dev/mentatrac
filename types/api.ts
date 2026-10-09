@@ -78,3 +78,12 @@ export type UpdateMeResponse = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type ForgotPasswordPayload = {
+  email: string;
+};
+
+export type ResetPasswordPayload = {
+  token: string;
+  newPassword: string;
+};
