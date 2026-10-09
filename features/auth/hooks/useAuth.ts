@@ -14,6 +14,8 @@ import type {
   UpdateMeResponse,
   ForgotPasswordPayload,
   ResetPasswordPayload,
+  WellnessGoalsPayload,
+  WellnessGoalsResponse,
 } from "@/types/api";
 
 export const AUTH_QUERY_KEY = ["auth", "me"] as const;
@@ -152,6 +154,19 @@ export function useResetPassword() {
       } else {
         toast.error(error.message || "Couldn't reset your password.");
       }
+    },
+  });
+}
+
+export function useSaveWellnessGoals() {
+  const queryClient = useQueryClient();
+  return useMutation<WellnessGoalsResponse, Error, WellnessGoalsPayload>({
+    mutationFn: (payload) => authService.saveWellnessGoals(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+    },
+    onError: (error) => {
+      toast.error(error.message || "Couldn't save your goals. Try again.");
     },
   });
 }

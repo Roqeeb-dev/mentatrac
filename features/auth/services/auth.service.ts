@@ -10,6 +10,8 @@ import type {
   UpdateMeResponse,
   ForgotPasswordPayload,
   ResetPasswordPayload,
+  WellnessGoalsPayload,
+  WellnessGoalsResponse,
   User,
 } from "@/types/api";
 
@@ -69,4 +71,7 @@ export const authService = {
 
   resetPassword: (payload: ResetPasswordPayload) =>
     apiClient.post<{ message: string }>("/auth/reset-password", payload),
+
+  saveWellnessGoals: (payload: WellnessGoalsPayload) =>
+    apiClient.put<WellnessGoalsResponse>("/users/me/wellness-goals", payload),
 };

@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useOnboardingDraft } from "@/features/onboarding/hooks/useOnboardingDraft";
+import { useSaveWellnessGoals } from "@/features/auth/hooks/useAuth";
 import type { OnboardingGoal } from "@/stores/useOnboardingStore";
 
 const GOAL_OPTIONS: { id: OnboardingGoal; label: string }[] = [
@@ -21,10 +22,19 @@ const GOAL_OPTIONS: { id: OnboardingGoal; label: string }[] = [
 export default function GoalsPage() {
   const router = useRouter();
   const { goals, toggleGoal, isHydrated } = useOnboardingDraft();
+  const { mutate: saveGoals, isPending } = useSaveWellnessGoals();
 
   const handleNext = () => {
-    if (goals.length === 0) return;
-    router.push("/onboarding/reminder");
+    if (goals.length === 0 || isPending) return;
+
+    const payload = GOAL_OPTIONS.filter((g) => goals.includes(g.id)).map(
+      (g) => g.label,
+    );
+
+    saveGoals(
+      { goals: payload },
+      { onSuccess: () => router.push("/onboarding/reminder") },
+    );
   };
 
   const hasSelection = goals.length > 0;
@@ -61,7 +71,8 @@ export default function GoalsPage() {
                 key={goal.id}
                 type="button"
                 onClick={() => toggleGoal(goal.id)}
-                className={`rounded-full px-4 py-2 text-caption font-semibold transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-700 ${
+                disabled={isPending}
+                className={`rounded-full px-4 py-2 text-caption font-semibold transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-700 disabled:cursor-not-allowed disabled:opacity-60 ${
                   isSelected
                     ? "border border-purple-700 bg-purple-50 text-purple-700"
                     : "border border-gray-200 bg-white text-text-secondary hover:border-gray-300 hover:text-text-primary"
@@ -80,7 +91,8 @@ export default function GoalsPage() {
           variant="primary"
           size="lg"
           fullWidth
-          disabled={!isHydrated || !hasSelection}
+          loading={isPending}
+          disabled={!isHydrated || !hasSelection || isPending}
           onClick={handleNext}
           rightIcon={
             hasSelection ? <ArrowRight className="h-4 w-4" /> : undefined

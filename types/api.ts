@@ -87,3 +87,13 @@ export type ResetPasswordPayload = {
   token: string;
   newPassword: string;
 };
+
+export type WellnessGoalsPayload = {
+  goals: string[];
+};
+
+export type WellnessGoalsResponse = {
+  id: string;
+  goals: string[];
+  updatedAt: string;
+};
