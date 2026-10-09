@@ -33,24 +33,61 @@ const floatY = {
 
 function MoodRowVisual() {
   const moods = [
-    { emoji: "✨", bg: "bg-mood-radiant-light" },
-    { emoji: "🙂", bg: "bg-mood-good-light" },
-    { emoji: "😐", bg: "bg-mood-okay-light" },
-    { emoji: "😔", bg: "bg-mood-tough-light" },
-    { emoji: "😢", bg: "bg-mood-hard-light" },
+    { emoji: "✨", tint: "bg-amber-300/15" },
+    { emoji: "🙂", tint: "bg-emerald-300/15" },
+    { emoji: "😐", tint: "bg-sky-300/15" },
+    { emoji: "😔", tint: "bg-violet-300/15" },
+    { emoji: "😢", tint: "bg-rose-300/15" },
   ];
+  const bars = [32, 54, 42, 74, 60, 92, 50];
+
   return (
-    <div className="flex flex-wrap gap-3">
-      {moods.map((m, i) => (
-        <motion.div
-          key={m.emoji}
-          className={`flex h-12 w-12 items-center justify-center rounded-full ${m.bg} text-xl`}
-          animate={floatY.animate}
-          transition={{ ...floatY.transition, delay: i * 0.12 }}
-        >
-          {m.emoji}
-        </motion.div>
-      ))}
+    <div className="flex flex-col items-center gap-8">
+      {/* Mood tiles: 3 on top, 2 below */}
+      <div className="flex max-w-[260px] flex-wrap justify-center gap-3">
+        {moods.map((m, i) => (
+          <motion.div
+            key={m.emoji}
+            className={`flex h-16 w-16 items-center justify-center rounded-2xl border border-white/15 ${m.tint} text-2xl shadow-lg shadow-black/10 backdrop-blur-md`}
+            initial={{ opacity: 0, y: 12, scale: 0.9 }}
+            animate={{ opacity: 1, y: [0, -6, 0], scale: 1 }}
+            transition={{
+              opacity: { delay: i * 0.08, duration: 0.4 },
+              scale: { delay: i * 0.08, duration: 0.4 },
+              y: {
+                delay: 0.5 + i * 0.12,
+                duration: 3.4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
+            }}
+          >
+            {m.emoji}
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Mini trend chart */}
+      <div className="flex h-24 items-end gap-2.5">
+        {bars.map((h, i) => (
+          <motion.div
+            key={i}
+            className={`w-3.5 origin-bottom rounded-full ${
+              i === 5
+                ? "bg-gradient-to-t from-teal-300/80 to-white/90"
+                : "bg-white/20"
+            }`}
+            style={{ height: `${h}%` }}
+            initial={{ scaleY: 0 }}
+            animate={{ scaleY: 1 }}
+            transition={{
+              delay: 0.6 + i * 0.07,
+              duration: 0.5,
+              ease: "easeOut",
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 }
