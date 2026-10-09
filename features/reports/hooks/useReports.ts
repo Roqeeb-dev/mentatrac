@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useCheckIns } from "@/features/check-in/hooks/useCheckInHistory";
-import { useJournal } from "@/features/journal/hooks/useJournal";
+import { useJournalEntries } from "@/features/journal/hooks/useJournalEntries";
 import type { TimeRange } from "../types/reports";
 import { buildReports } from "../utils/buildReports";
 
@@ -10,7 +10,8 @@ export function useReports(initialRange: TimeRange = "30D") {
   const [timeRange, setTimeRange] = useState<TimeRange>(initialRange);
 
   const checkInsQuery = useCheckIns();
-  const { entries = [], isLoading: isLoadingJournal } = useJournal();
+  const { data: entries = [], isLoading: isLoadingJournal } =
+    useJournalEntries();
 
   const data = useMemo(
     () =>

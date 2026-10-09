@@ -86,7 +86,7 @@ export function buildReports(
     positiveDays(start, dayKey(new Date())) - positiveDays(prevStart, prevEnd);
 
   const journalInRange = journalEntries.filter(
-    (e) => e.createdAt.slice(0, 10) >= start,
+    (e) => dayKey(new Date(e.createdAt)) >= start,
   ).length;
 
   // Trend: one averaged point per day with a check-in

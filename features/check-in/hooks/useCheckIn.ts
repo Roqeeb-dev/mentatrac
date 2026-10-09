@@ -14,6 +14,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { CHECK_INS_QUERY_KEY } from "./useCheckInHistory";
 import { profileKeys } from "@/features/profile/hooks/useUserProfile";
 import { toast } from "@/stores/toast-store";
+import { getErrorMessage } from "@/lib/api/getErrorMessage";
 
 const initialPayload: CheckInPayload = {
   mood: 3,
@@ -85,9 +86,11 @@ export function useCheckInFlow(onSuccess?: (record: CheckInRecord) => void) {
       setStep(5);
       toast.success("Check-in saved");
       onSuccess?.(record);
-    } catch (err: any) {
-      const message =
-        err?.message || "Failed to save check-in. Please try again.";
+    } catch (err) {
+      const message = getErrorMessage(err, {
+        fallback: "Couldn't save your check-in. Please try again.",
+        400: "We couldn't save that check-in. Please review your selections and try again.",
+      });
       setError(message);
       toast.error(message);
     } finally {

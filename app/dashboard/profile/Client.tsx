@@ -24,9 +24,16 @@ export default function ProfilePage() {
     useUserProfile();
 
   const handleToggleNotification = async (key: string, value: boolean) => {
-    await updateSettings({
-      notifications: { [key]: value } as Partial<NotificationSettings>,
-    });
+    try {
+      await updateSettings({
+        notifications: { [key]: value } as Partial<NotificationSettings>,
+      });
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Couldn't save your settings.",
+      );
+      throw err;
+    }
   };
 
   const handleChangePassword = async (data: {

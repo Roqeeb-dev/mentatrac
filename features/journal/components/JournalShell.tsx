@@ -23,6 +23,8 @@ export function JournalShell() {
         activeFilter={journal.activeFilter}
         onFilterChange={journal.setActiveFilter}
         onSelectEntry={journal.selectEntry}
+        onDeleteEntry={journal.deleteEntry}
+        isDeleting={journal.isDeleting}
         onStartNewEntry={journal.startNewEntry}
         stats={journal.stats}
       />
@@ -36,10 +38,10 @@ export function JournalShell() {
           <JournalEditor
             entry={journal.selectedEntry}
             isCreating={journal.isCreating}
+            isSaving={journal.isSaving}
             onSave={journal.saveNewEntry}
             onUpdate={journal.updateEntry}
             onCancel={journal.exitEditor}
-            onDelete={journal.deleteEntry}
           />
         ) : (
           <JournalEmptyState onStartNew={journal.startNewEntry} />

@@ -78,3 +78,22 @@ export type UpdateMeResponse = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type ForgotPasswordPayload = {
+  email: string;
+};
+
+export type ResetPasswordPayload = {
+  token: string;
+  newPassword: string;
+};
+
+export type WellnessGoalsPayload = {
+  goals: string[];
+};
+
+export type WellnessGoalsResponse = {
+  id: string;
+  goals: string[];
+  updatedAt: string;
+};

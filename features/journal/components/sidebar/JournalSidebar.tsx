@@ -16,6 +16,8 @@ interface JournalSidebarProps {
   activeFilter: JournalFilter;
   onFilterChange: (filter: JournalFilter) => void;
   onSelectEntry: (id: string) => void;
+  onDeleteEntry: (id: string, onDone?: () => void) => void;
+  isDeleting?: boolean;
   onStartNewEntry: () => void;
   stats: JournalStats;
 }
@@ -29,6 +31,8 @@ export function JournalSidebar({
   activeFilter,
   onFilterChange,
   onSelectEntry,
+  onDeleteEntry,
+  isDeleting = false,
   onStartNewEntry,
   stats,
 }: JournalSidebarProps) {
@@ -51,6 +55,8 @@ export function JournalSidebar({
           entries={entries}
           selectedId={selectedId}
           onSelectEntry={onSelectEntry}
+          onDeleteEntry={onDeleteEntry}
+          isDeleting={isDeleting}
         />
       </div>
 

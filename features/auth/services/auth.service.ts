@@ -8,6 +8,10 @@ import type {
   ChangePasswordPayload,
   UpdateMePayload,
   UpdateMeResponse,
+  ForgotPasswordPayload,
+  ResetPasswordPayload,
+  WellnessGoalsPayload,
+  WellnessGoalsResponse,
   User,
 } from "@/types/api";
 
@@ -61,4 +65,13 @@ export const authService = {
 
   changePassword: (payload: ChangePasswordPayload) =>
     apiClient.patch<{ message: string }>("/users/me/password", payload),
+
+  forgotPassword: (payload: ForgotPasswordPayload) =>
+    apiClient.post<{ message: string }>("/auth/forgot-password", payload),
+
+  resetPassword: (payload: ResetPasswordPayload) =>
+    apiClient.post<{ message: string }>("/auth/reset-password", payload),
+
+  saveWellnessGoals: (payload: WellnessGoalsPayload) =>
+    apiClient.put<WellnessGoalsResponse>("/users/me/wellness-goals", payload),
 };

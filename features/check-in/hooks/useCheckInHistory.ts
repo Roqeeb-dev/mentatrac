@@ -12,7 +12,7 @@ export const MOOD_META: Record<MoodScore, { emoji: string; label: string }> = {
   4: { emoji: "😊", label: "Good" },
   3: { emoji: "😐", label: "Okay" },
   2: { emoji: "😔", label: "Tough" },
-  1: { emoji: "😞", label: "Hard" },
+  1: { emoji: "😫", label: "Hard" },
 };
 
 function toDayKey(d: Date) {
