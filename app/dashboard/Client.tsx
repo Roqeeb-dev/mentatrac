@@ -1,12 +1,16 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { Flame, Check, BookOpen } from "lucide-react";
 
-import { useJournal } from "@/features/journal/hooks/useJournal";
+import { useJournalEntries } from "@/features/journal/hooks/useJournalEntries";
+import { useJournalUiStore } from "@/features/journal/hooks/useJournalUiStore";
+import { sortEntriesByDateDesc } from "@/features/journal/lib/journalUtils";
 import { useUserProfile } from "@/features/profile/hooks/useUserProfile";
 import { useCheckIns } from "@/features/check-in/hooks/useCheckInHistory";
 import { useDashboardMoods } from "@/features/dashboard/hooks/useDashboardMoods";
+import { useCheckInModalStore } from "@/stores/check-in-modal-store";
 
 import { GreetingBanner } from "@/features/dashboard/components/GreetingBanner";
 import { TodayMoodCard } from "@/features/dashboard/components/TodayMoodCard";
@@ -15,23 +19,28 @@ import { MoodBannerCTA } from "@/features/dashboard/components/MoodBannerCta";
 import { MoodTrendChart } from "@/features/dashboard/components/MoodTrendChart";
 import { QuickExerciseCard } from "@/features/dashboard/components/QuickExerciseCard";
 import { RecentJournalWidget } from "@/features/dashboard/components/RecentJournalWidget";
-import { CheckInModal } from "@/features/check-in/components/CheckInModal";
 import { StatCard } from "@/features/dashboard/components/StatCard";
 
 import { MOCK_QUICK_EXERCISE } from "@/features/dashboard/data/mockDashboard";
 
 export default function DashboardClient() {
+  const router = useRouter();
+
   const {
-    entries = [],
+    data: rawEntries = [],
     isLoading: isLoadingJournal,
     isError: isJournalError,
-  } = useJournal();
+  } = useJournalEntries();
+  const entries = useMemo(
+    () => sortEntriesByDateDesc(rawEntries),
+    [rawEntries],
+  );
+
   const { profile, isLoading: isLoadingProfile } = useUserProfile();
   const { data: checkIns = [], isLoading: isLoadingCheckIns } = useCheckIns();
   const { todayMood, week, trend } = useDashboardMoods();
-
-  const [isCheckInOpen, setIsCheckInOpen] = useState(false);
-  const openCheckIn = () => setIsCheckInOpen(true);
+  const { startNewEntry } = useJournalUiStore();
+  const openCheckIn = useCheckInModalStore((s) => s.open);
 
   const stats = useMemo(
     () => ({
@@ -41,6 +50,11 @@ export default function DashboardClient() {
     }),
     [profile, checkIns, entries],
   );
+
+  const handleNewJournalEntry = () => {
+    startNewEntry();
+    router.push("/dashboard/journal");
+  };
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -122,15 +136,10 @@ export default function DashboardClient() {
             entries={entries}
             isLoading={isLoadingJournal}
             isError={isJournalError}
-            onNewEntry={() => setIsCheckInOpen(true)}
+            onNewEntry={handleNewJournalEntry}
           />
         </div>
       </div>
-
-      <CheckInModal
-        isOpen={isCheckInOpen}
-        onClose={() => setIsCheckInOpen(false)}
-      />
     </div>
   );
 }

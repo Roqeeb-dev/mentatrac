@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Sidebar, SidebarProps } from "./Sidebar";
 import { Topbar, TopbarProps } from "./Topbar";
 import { CheckInModal } from "@/features/check-in/components/CheckInModal";
+import { useCheckInModalStore } from "@/stores/check-in-modal-store";
 
 export interface DashboardShellProps {
   children: ReactNode;
@@ -26,14 +27,15 @@ export function DashboardShell({
   topbarProps,
 }: DashboardShellProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isCheckInOpen, setIsCheckInOpen] = useState(false);
+  const {
+    isOpen: isCheckInOpen,
+    open: handleOpenCheckIn,
+    close: handleCloseCheckIn,
+  } = useCheckInModalStore();
   const pathname = usePathname();
 
   const currentTitle =
     topbarProps?.title ?? ROUTE_TITLES[pathname] ?? "Dashboard";
-
-  const handleOpenCheckIn = () => setIsCheckInOpen(true);
-  const handleCloseCheckIn = () => setIsCheckInOpen(false);
 
   return (
     <div className="flex min-h-screen bg-[#F8F9FC]">
