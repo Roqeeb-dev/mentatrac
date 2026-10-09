@@ -5,8 +5,9 @@ export interface ApiJournalEntry {
   userId: string;
   title: string;
   content: string;
-  mood: string;
-  tags: string[];
+  mood?: string | null;
+  tags?: string[];
+  archivedAt?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -19,15 +20,21 @@ export interface ApiJournalCreateBody {
 
 export type ApiJournalUpdateBody = Partial<ApiJournalCreateBody>;
 
+const BASE = "/journal-entries";
+const LIST_LIMIT = 200;
+
 const JOURNAL_ROUTES = {
-  list: "/journal",
-  create: "/journal",
-  update: (id: string) => `/journal/${id}`,
-  remove: (id: string) => `/journal/${id}`,
+  list: BASE,
+  create: BASE,
+  update: (id: string) => `${BASE}/${id}`,
+  remove: (id: string) => `${BASE}/${id}`,
 };
 
 export const journalApi = {
-  list: () => apiClient.get<ApiJournalEntry[]>(JOURNAL_ROUTES.list),
+  list: () =>
+    apiClient.get<ApiJournalEntry[]>(JOURNAL_ROUTES.list, {
+      params: { limit: LIST_LIMIT },
+    }),
 
   create: (body: ApiJournalCreateBody) =>
     apiClient.post<ApiJournalEntry>(JOURNAL_ROUTES.create, body),

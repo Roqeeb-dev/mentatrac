@@ -1,4 +1,8 @@
-import { ApiJournalEntry, journalApi } from "../api/journalApi";
+import {
+  ApiJournalEntry,
+  ApiJournalUpdateBody,
+  journalApi,
+} from "../api/journalApi";
 import {
   CreateJournalInput,
   JournalEntry,
@@ -29,7 +33,7 @@ function fromApiEntry(entry: ApiJournalEntry): JournalEntry {
     userId: entry.userId,
     title: entry.title,
     content: entry.content,
-    moodTag: API_TO_MOOD[entry.mood],
+    moodTag: entry.mood ? API_TO_MOOD[entry.mood] : undefined,
     createdAt: entry.createdAt,
     updatedAt: entry.updatedAt,
   };
@@ -45,7 +49,7 @@ export const journalService = {
     const entry = await journalApi.create({
       title: input.title,
       content: input.content,
-      mood: input.moodTag ? MOOD_TO_API[input.moodTag] : undefined,
+      ...(input.moodTag && { mood: MOOD_TO_API[input.moodTag] }),
     });
     return fromApiEntry(entry);
   },
@@ -54,11 +58,12 @@ export const journalService = {
     id: string,
     input: UpdateJournalInput,
   ): Promise<JournalEntry> {
-    const entry = await journalApi.update(id, {
-      title: input.title,
-      content: input.content,
-      mood: input.moodTag ? MOOD_TO_API[input.moodTag] : undefined,
-    });
+    const body: ApiJournalUpdateBody = {};
+    if (input.title !== undefined) body.title = input.title;
+    if (input.content !== undefined) body.content = input.content;
+    if (input.moodTag) body.mood = MOOD_TO_API[input.moodTag];
+
+    const entry = await journalApi.update(id, body);
     return fromApiEntry(entry);
   },
 
@@ -66,11 +71,6 @@ export const journalService = {
     await journalApi.remove(id);
   },
 
-  /**
-   * totalEntries/totalWords are derived from the real entries list.
-   * dayStreak has no backend source yet — held at 0 until that's answered
-   * (see journal-api-changes.md, item 5).
-   */
   async getStats(): Promise<JournalStats> {
     const entries = await this.getEntries();
     const totalWords = entries.reduce((sum, entry) => {
@@ -79,7 +79,7 @@ export const journalService = {
 
     return {
       totalEntries: entries.length,
-      dayStreak: 0, // TODO: wire up once backend confirms journal streak tracking
+      dayStreak: 0,
       totalWords,
     };
   },

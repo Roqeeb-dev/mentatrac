@@ -52,8 +52,13 @@ export function useJournal() {
     updateEntry.mutate({ id, updates });
   };
 
-  const removeEntry = (id: string) => {
-    deleteEntry.mutate(id, { onSuccess: exitEditor });
+  const removeEntry = (id: string, onDone?: () => void) => {
+    deleteEntry.mutate(id, {
+      onSuccess: () => {
+        if (id === selectedId) exitEditor();
+        onDone?.();
+      },
+    });
   };
 
   return {
@@ -75,5 +80,6 @@ export function useJournal() {
     saveNewEntry,
     updateEntry: updateExistingEntry,
     deleteEntry: removeEntry,
+    isDeleting: deleteEntry.isPending,
   };
 }
