@@ -47,10 +47,10 @@ export type InfluencerCategory =
 
 export interface CheckInPayload {
   mood: MoodScore;
+  intensity?: number;
   emotions: EmotionCategory[];
   influencers: InfluencerCategory[];
   note?: string;
-  /** "YYYY-MM-DD". Defaults to today if omitted. */
   date?: string;
 }
 

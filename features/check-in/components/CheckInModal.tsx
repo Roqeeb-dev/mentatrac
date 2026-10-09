@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { X } from "lucide-react";
 import { useCheckInFlow } from "../hooks/useCheckIn";
 import { StepMood } from "./StepMood";
@@ -29,12 +30,23 @@ export function CheckInModal({ isOpen, onClose }: CheckInModalProps) {
     resetForm,
   } = useCheckInFlow();
 
-  if (!isOpen) return null;
-
   const handleClose = () => {
+    if (isSubmitting) return;
     resetForm();
     onClose();
   };
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, isSubmitting]);
+
+  if (!isOpen) return null;
 
   const steps = [
     <StepMood
@@ -70,9 +82,20 @@ export function CheckInModal({ isOpen, onClose }: CheckInModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm">
-      <div className="relative w-full max-w-[500px] rounded-3xl bg-gray-100 p-6 md:p-8 shadow-2xl transition-all">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mood check-in"
+        className="relative w-full max-w-[500px] rounded-3xl bg-gray-100 p-6 md:p-8 shadow-2xl transition-all"
+      >
         <div className="flex items-center justify-between pb-6">
-          <div className="flex items-center gap-1.5">
+          <div
+            className="flex items-center gap-1.5"
+            role="progressbar"
+            aria-valuemin={1}
+            aria-valuemax={4}
+            aria-valuenow={Math.min(step, 4)}
+          >
             {[1, 2, 3, 4].map((i) => (
               <span
                 key={i}
@@ -83,8 +106,11 @@ export function CheckInModal({ isOpen, onClose }: CheckInModalProps) {
             ))}
           </div>
           <button
+            type="button"
             onClick={handleClose}
-            className="rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+            disabled={isSubmitting}
+            aria-label="Close check-in"
+            className="rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors disabled:cursor-not-allowed disabled:opacity-40"
           >
             <X className="h-5 w-5" />
           </button>
