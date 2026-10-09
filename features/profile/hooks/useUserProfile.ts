@@ -4,6 +4,7 @@ import type {
   UserProfile,
   UpdateProfileSettingsPayload,
 } from "../types/profile";
+import { AUTH_QUERY_KEY } from "@/features/auth/hooks/useAuth";
 
 export const profileKeys = {
   all: ["profile"] as const,
@@ -24,6 +25,7 @@ export function useUserProfile() {
       profileService.updateProfileSettings(payload),
     onSuccess: (updatedProfile) => {
       queryClient.setQueryData(profileKeys.details(), updatedProfile);
+      queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEY });
     },
   });
 

@@ -1,29 +1,27 @@
-import type { Gender, OnboardingGoal } from "@/types/api";
-import type { OnboardingStepSlug } from "@/lib/onboarding/step-order";
+import type { Gender } from "@/types/api";
 
-// ---- Backend shape: GET /api/v1/profile ----
 export interface ProfilePreferences {
   theme?: string;
   dailyMoodReminder?: boolean;
   journalReminder?: boolean;
   streakAlerts?: boolean;
   reminderTime?: string;
-  /** Old single flag. Remove once Swagger confirms it's gone. */
-  notificationsEnabled?: boolean;
 }
 
 export interface Profile {
   bio?: string | null;
   avatarUrl?: string | null;
+  age?: number | null;
+  gender?: Gender | string | null;
+  goals?: string[];
   streakCount?: number;
   lastCheckInAt?: string | null;
+  dayStreak?: number;
+  lastJournalAt?: string | null;
   wellnessScore?: number;
-  age?: number;
-  gender?: Gender;
-  goals?: OnboardingGoal[];
   reminderEnabled?: boolean;
   reminderTime?: string;
-  onboardingStep?: OnboardingStepSlug;
+  onboardingStep?: number;
   onboardingCompleted?: boolean;
   preferences?: ProfilePreferences;
   createdAt?: string;
@@ -33,7 +31,7 @@ export interface Profile {
 export interface ProfileResponse {
   id: string;
   email: string;
-  name: string;
+  name: string | null;
   createdAt: string;
   updatedAt: string;
   profile?: Profile | null;

@@ -10,6 +10,7 @@ import type {
   UpdateProfileSettingsPayload,
   UserProfile,
 } from "../types/profile";
+import { journalService } from "@/features/journal/services/journal.service";
 
 const MOOD_COLORS: Record<MoodScore, string> = {
   5: "#f97316",
@@ -50,9 +51,13 @@ function countPositiveDaysThisMonth(records: CheckInRecord[]) {
 
 export const profileService = {
   async getUserProfile(): Promise<UserProfile> {
-    const [raw, records] = await Promise.all([
+    const [raw, records, journalCount] = await Promise.all([
       apiClient.get<ProfileResponse>("/profile"),
       checkInService.getCheckIns(),
+      journalService
+        .getEntries()
+        .then((e) => e.length)
+        .catch(() => 0),
     ]);
 
     const profile = raw.profile ?? {};
@@ -60,17 +65,16 @@ export const profileService = {
 
     return {
       id: raw.id,
-      fullName: raw.name,
+      fullName: raw.name?.trim() || raw.email.split("@")[0],
       email: raw.email,
       avatarUrl: profile.avatarUrl ?? null,
       memberSince: new Date(raw.createdAt).toLocaleDateString("en-US", {
         month: "long",
         year: "numeric",
       }),
-      wellnessScore: profile.wellnessScore ?? 0, // computed server-side
+      wellnessScore: profile.wellnessScore ?? 0,
       currentStreakDays: profile.streakCount ?? 0,
 
-      // Computed client-side from the check-in list
       totalCheckIns: records.length,
       positiveDaysThisMonth: countPositiveDaysThisMonth(records),
       moodBreakdown: MOOD_ORDER.map((score) => ({
@@ -79,11 +83,11 @@ export const profileService = {
         colorHex: MOOD_COLORS[score],
       })),
 
-      totalJournalEntries: 0,
+      totalJournalEntries: journalCount,
 
       notifications: {
         dailyMoodReminder:
-          prefs.dailyMoodReminder ?? prefs.notificationsEnabled ?? false,
+          prefs.dailyMoodReminder ?? profile.reminderEnabled ?? false,
         journalReminder: prefs.journalReminder ?? false,
         streakAlerts: prefs.streakAlerts ?? false,
         reminderTime: to12h(prefs.reminderTime ?? profile.reminderTime),
@@ -100,7 +104,6 @@ export const profileService = {
       await apiClient.patch("/users/me", { name: payload.fullName });
     }
 
-    // Notifications live in profile.preferences: PATCH /profile/settings
     const n = payload.notifications;
     if (n) {
       const preferences: Record<string, boolean | string> = {};
