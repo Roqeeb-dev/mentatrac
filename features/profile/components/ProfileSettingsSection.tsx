@@ -6,6 +6,7 @@ import { UserProfile } from "../types/profile";
 import ChangePasswordModal from "./ChangePasswordModal";
 import SignOutModal from "./SignOutModal";
 import DeleteAccountModal from "./DeleteAccountModal";
+import { Loader2 } from "lucide-react";
 
 interface Props {
   profile: UserProfile;
@@ -17,6 +18,7 @@ interface Props {
   }) => Promise<void> | void;
   onSignOut?: () => Promise<void> | void;
   onDeleteAccount?: () => Promise<void> | void;
+  onExportData?: () => Promise<void> | void;
 }
 
 // Reusable toggle switch component
@@ -62,6 +64,7 @@ export default function ProfileSettingsSection({
   onChangePassword,
   onSignOut,
   onDeleteAccount,
+  onExportData,
 }: Props) {
   // Toggle states
   const [notifications, setNotifications] = useState(profile.notifications);
@@ -77,6 +80,8 @@ export default function ProfileSettingsSection({
   const [isSignOutLoading, setIsSignOutLoading] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
+  const [isExporting, setIsExporting] = useState(false);
+
   useEffect(() => {
     setNotifications(profile.notifications);
   }, [profile.notifications]);
@@ -90,7 +95,7 @@ export default function ProfileSettingsSection({
     try {
       await onToggleNotification?.(key as string, value);
     } catch {
-      setNotifications(previous); // save failed, flip the switch back
+      setNotifications(previous);
     }
   };
 
@@ -111,6 +116,18 @@ export default function ProfileSettingsSection({
       // the hook shows the error toast; modal stays open to retry
     } finally {
       setIsPasswordLoading(false);
+    }
+  };
+
+  const handleExport = async () => {
+    if (isExporting) return;
+    setIsExporting(true);
+    try {
+      await onExportData?.();
+    } catch {
+      // the hook shows the error toast
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -250,16 +267,27 @@ export default function ProfileSettingsSection({
           Data & Storage
         </h3>
         <div className="mt-5 space-y-5">
-          <button className="flex w-full items-center justify-between text-left">
+          <button
+            type="button"
+            onClick={handleExport}
+            disabled={isExporting}
+            className="flex w-full items-center justify-between text-left disabled:cursor-wait disabled:opacity-70"
+          >
             <div>
               <p className="text-sm font-semibold text-slate-900">
                 Export my data
               </p>
               <p className="text-xs text-slate-400 mt-0.5">
-                Download everything as CSV or PDF
+                {isExporting
+                  ? "Preparing your export..."
+                  : "Download everything as a JSON file"}
               </p>
             </div>
-            <ChevronRight className="h-4 w-4 text-slate-300" />
+            {isExporting ? (
+              <Loader2 className="h-4 w-4 animate-spin text-slate-400" />
+            ) : (
+              <ChevronRight className="h-4 w-4 text-slate-300" />
+            )}
           </button>
 
           <button className="flex w-full items-center justify-between text-left">

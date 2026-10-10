@@ -13,6 +13,7 @@ import { ProfileSkeleton } from "@/features/profile/components/ProfileSkeleton";
 import { ProfileErrorState } from "@/features/profile/components/ProfileErrorState";
 import type { NotificationSettings } from "@/features/profile/types/profile";
 import { toast } from "@/stores/toast-store";
+import { useExportData } from "@/features/data-export/hooks/useExportData";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -53,6 +54,12 @@ export default function ProfilePage() {
     }
   };
 
+  const exportData = useExportData();
+
+  const handleExportData = async () => {
+    await exportData.mutateAsync();
+  };
+
   const handleDeleteAccount = async () => {
     await deleteAccount.mutateAsync();
     router.replace("/");
@@ -83,6 +90,7 @@ export default function ProfilePage() {
             onChangePassword={handleChangePassword}
             onSignOut={handleSignOut}
             onDeleteAccount={handleDeleteAccount}
+            onExportData={handleExportData}
           />
         </main>
       </div>
