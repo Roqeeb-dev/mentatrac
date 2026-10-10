@@ -14,6 +14,7 @@ import { ProfileErrorState } from "@/features/profile/components/ProfileErrorSta
 import type { NotificationSettings } from "@/features/profile/types/profile";
 import { toast } from "@/stores/toast-store";
 import { useExportData } from "@/features/data-export/hooks/useExportData";
+import type { ExportFormat } from "@/features/data-export/hooks/useExportData";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -56,8 +57,8 @@ export default function ProfilePage() {
 
   const exportData = useExportData();
 
-  const handleExportData = async () => {
-    await exportData.mutateAsync();
+  const handleExportData = async (format: ExportFormat) => {
+    await exportData.mutateAsync(format);
   };
 
   const handleDeleteAccount = async () => {

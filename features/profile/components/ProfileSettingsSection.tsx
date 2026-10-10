@@ -7,6 +7,7 @@ import ChangePasswordModal from "./ChangePasswordModal";
 import SignOutModal from "./SignOutModal";
 import DeleteAccountModal from "./DeleteAccountModal";
 import { Loader2 } from "lucide-react";
+import type { ExportFormat } from "@/features/data-export/hooks/useExportData";
 
 interface Props {
   profile: UserProfile;
@@ -18,7 +19,7 @@ interface Props {
   }) => Promise<void> | void;
   onSignOut?: () => Promise<void> | void;
   onDeleteAccount?: () => Promise<void> | void;
-  onExportData?: () => Promise<void> | void;
+  onExportData?: (format: ExportFormat) => Promise<void> | void;
 }
 
 // Reusable toggle switch component
@@ -81,6 +82,9 @@ export default function ProfileSettingsSection({
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
   const [isExporting, setIsExporting] = useState(false);
+  const [exportingFormat, setExportingFormat] = useState<ExportFormat | null>(
+    null,
+  );
 
   useEffect(() => {
     setNotifications(profile.notifications);
@@ -119,15 +123,15 @@ export default function ProfileSettingsSection({
     }
   };
 
-  const handleExport = async () => {
-    if (isExporting) return;
-    setIsExporting(true);
+  const handleExport = async (format: ExportFormat) => {
+    if (exportingFormat) return;
+    setExportingFormat(format);
     try {
-      await onExportData?.();
+      await onExportData?.(format);
     } catch {
       // the hook shows the error toast
     } finally {
-      setIsExporting(false);
+      setExportingFormat(null);
     }
   };
 
@@ -267,28 +271,35 @@ export default function ProfileSettingsSection({
           Data & Storage
         </h3>
         <div className="mt-5 space-y-5">
-          <button
-            type="button"
-            onClick={handleExport}
-            disabled={isExporting}
-            className="flex w-full items-center justify-between text-left disabled:cursor-wait disabled:opacity-70"
-          >
+          <div className="flex w-full items-center justify-between gap-3">
             <div>
               <p className="text-sm font-semibold text-slate-900">
                 Export my data
               </p>
               <p className="text-xs text-slate-400 mt-0.5">
-                {isExporting
+                {exportingFormat
                   ? "Preparing your export..."
-                  : "Download everything as a JSON file"}
+                  : "Download everything as JSON or CSV"}
               </p>
             </div>
-            {isExporting ? (
-              <Loader2 className="h-4 w-4 animate-spin text-slate-400" />
-            ) : (
-              <ChevronRight className="h-4 w-4 text-slate-300" />
-            )}
-          </button>
+            <div className="flex shrink-0 items-center gap-2">
+              {(["json", "csv"] as const).map((format) => (
+                <button
+                  key={format}
+                  type="button"
+                  onClick={() => handleExport(format)}
+                  disabled={exportingFormat !== null}
+                  className="inline-flex min-w-[56px] items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold uppercase text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-wait disabled:opacity-60"
+                >
+                  {exportingFormat === format ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    format
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <button className="flex w-full items-center justify-between text-left">
             <div>
