@@ -8,6 +8,7 @@ import SignOutModal from "./SignOutModal";
 import DeleteAccountModal from "./DeleteAccountModal";
 import { Loader2 } from "lucide-react";
 import type { ExportFormat } from "@/features/data-export/hooks/useExportData";
+import Link from "next/link";
 
 interface Props {
   profile: UserProfile;
@@ -249,19 +250,25 @@ export default function ProfileSettingsSection({
             />
           </div>
 
-          <button className="flex w-full items-center justify-between text-left transition-colors hover:opacity-80">
+          <Link
+            href="/privacy"
+            className="flex w-full items-center justify-between text-left transition-colors hover:opacity-80"
+          >
             <span className="text-sm font-semibold text-slate-900">
               Privacy policy
             </span>
             <ChevronRight className="h-4 w-4 text-slate-300" />
-          </button>
+          </Link>
 
-          <button className="flex w-full items-center justify-between text-left transition-colors hover:opacity-80">
+          <Link
+            href="/terms"
+            className="flex w-full items-center justify-between text-left transition-colors hover:opacity-80"
+          >
             <span className="text-sm font-semibold text-slate-900">
               Terms of service
             </span>
             <ChevronRight className="h-4 w-4 text-slate-300" />
-          </button>
+          </Link>
         </div>
       </SectionCard>
 
@@ -301,7 +308,10 @@ export default function ProfileSettingsSection({
             </div>
           </div>
 
-          <button className="flex w-full items-center justify-between text-left">
+          <Link
+            href="/about"
+            className="flex w-full items-center justify-between text-left"
+          >
             <div>
               <p className="text-sm font-semibold text-slate-900">
                 About Mentatrac
@@ -309,7 +319,7 @@ export default function ProfileSettingsSection({
               <p className="text-xs text-slate-400 mt-0.5">Version 1.0.0</p>
             </div>
             <ChevronRight className="h-4 w-4 text-slate-300" />
-          </button>
+          </Link>
         </div>
       </SectionCard>
 
