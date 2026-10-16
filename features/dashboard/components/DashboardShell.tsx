@@ -19,6 +19,7 @@ const ROUTE_TITLES: Record<string, string> = {
   "/dashboard/reports": "Reports",
   "/dashboard/wellness": "Wellness",
   "/dashboard/profile": "Profile",
+  "/dashboard/check-ins": "Check-ins",
 };
 
 export function DashboardShell({
