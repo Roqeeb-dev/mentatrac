@@ -8,7 +8,6 @@ import {
   BarChart3,
   HeartPulse,
   User as UserIcon,
-  CalendarDays,
 } from "lucide-react";
 import { DashboardShell } from "@/features/dashboard/components/DashboardShell";
 import { useCurrentUser } from "@/features/auth/hooks/useAuth";
@@ -26,7 +25,6 @@ const NAV_ITEMS: NavItem[] = [
   { name: "Reports", href: "/dashboard/reports", icon: BarChart3 },
   { name: "Wellness", href: "/dashboard/wellness", icon: HeartPulse },
   { name: "Profile", href: "/dashboard/profile", icon: UserIcon },
-  { name: "Check-ins", href: "/dashboard/check-ins", icon: CalendarDays },
 ];
 
 export default function DashboardLayout({
